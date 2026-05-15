@@ -4,6 +4,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
   type ReactNode,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -35,14 +36,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(loadUserFromStorage);
   const [isLoading, setIsLoading] = useState(true);
+  const didRefresh = useRef(false);
 
   useEffect(() => {
     if (!user) {
       setIsLoading(false);
       return;
     }
+    if (didRefresh.current) return;
+    didRefresh.current = true;
     authApi.refresh()
       .catch(() => {
+        setAuthToken(null);
         setUser(null);
         localStorage.removeItem(USER_KEY);
       })

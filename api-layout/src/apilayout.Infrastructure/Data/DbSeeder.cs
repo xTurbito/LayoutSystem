@@ -52,7 +52,8 @@ public static class DbSeeder
     {
         var modules = new[]
         {
-            new Module { Name = "Usuarios", Description = "Gestión de usuarios", Icon = "users", Route = "/users", Order = 1 },
+            new Module { Name = "Usuarios", Description = "Gestión de usuarios", Icon = "users", Route = "/usuarios", Order = 1 },
+            new Module { Name = "Roles", Description = "Gestión de roles", Icon = "shield", Route = "/roles", Order = 2 },
         };
 
         foreach (var module in modules)
@@ -121,19 +122,30 @@ public static class DbSeeder
     {
         var adminRole = await context.Roles.FirstAsync(r => r.Name == "Admin");
         var usersModule = await context.Modules.FirstAsync(m => m.Name == "Usuarios");
+        var rolesModule = await context.Modules.FirstAsync(m => m.Name == "Roles");
 
-        var exists = await context.Set<RoleModule>()
-            .AnyAsync(rm => rm.RoleId == adminRole.Id && rm.ModuleId == usersModule.Id);
-
-        if (!exists)
+        var assignments = new[]
         {
-            context.Set<RoleModule>().Add(new RoleModule
+            (RoleId: adminRole.Id, ModuleId: usersModule.Id),
+            (RoleId: adminRole.Id, ModuleId: rolesModule.Id),
+        };
+
+        foreach (var (roleId, moduleId) in assignments)
+        {
+            var exists = await context.Set<RoleModule>()
+                .AnyAsync(rm => rm.RoleId == roleId && rm.ModuleId == moduleId);
+
+            if (!exists)
             {
-                RoleId = adminRole.Id,
-                ModuleId = usersModule.Id,
-                Actions = ModuleAction.View | ModuleAction.Create | ModuleAction.Edit | ModuleAction.Delete
-            });
-            await context.SaveChangesAsync();
+                context.Set<RoleModule>().Add(new RoleModule
+                {
+                    RoleId = roleId,
+                    ModuleId = moduleId,
+                    Actions = ModuleAction.View | ModuleAction.Create | ModuleAction.Edit | ModuleAction.Delete
+                });
+            }
         }
+
+        await context.SaveChangesAsync();
     }
 }
