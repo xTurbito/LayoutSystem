@@ -19,17 +19,10 @@ export default function ModalShell({
   children
 }: ModalShellProps) {
   const [mounted, setMounted] = useState(open);
-  const [visible, setVisible] = useState(false);
+  const closing = mounted && !open;
 
   useEffect(() => {
-    if (open) {
-      setMounted(true);
-      requestAnimationFrame(() => setVisible(true));
-    } else {
-      setVisible(false);
-      const t = setTimeout(() => setMounted(false), 220);
-      return () => clearTimeout(t);
-    }
+    if (open) setMounted(true);
   }, [open]);
 
   useEffect(() => {
@@ -43,15 +36,16 @@ export default function ModalShell({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 transition-opacity duration-[180ms] motion-reduce:transition-none ${visible ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 ${closing ? 'animate-[modal-backdrop-out_200ms_ease-in_forwards]' : 'animate-[modal-backdrop-in_200ms_ease-out_forwards]'}`}
       onClick={onClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className={`bg-surface rounded-2xl shadow-2xl mx-auto border border-border relative w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col transition-[opacity,transform] duration-[220ms] ease-out motion-reduce:transition-none ${visible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.97] translate-y-6'}`}
+        className={`bg-surface rounded-2xl shadow-2xl mx-auto border border-border relative w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col ${closing ? 'animate-[modal-out_200ms_ease-in_forwards]' : 'animate-[modal-in_220ms_ease-out_forwards]'}`}
         onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={() => { if (closing) setMounted(false); }}
       >
         <button
           className="absolute top-3 right-3 sm:top-4 sm:right-4 text-secondary hover:text-text transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-md"
