@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Theme tokens ───────────────────────────────────────────── */
+@theme {
+  --color-bg:            #f8fafc;
+  --color-surface:       #ffffff;
+  --color-border:        #e2e8f0;
+  --color-text:          #0f172a;
+  --color-secondary:     #64748b;
+  --color-primary:       #1e293b;
+  --color-primary-hover: #0f172a;
+  --color-accent:        #2563eb;
+  --color-accent-hover:  #1d4ed8;
+  --color-error:         #e53e3e;
+  --color-success:       #38a169;
+}
+
+/* ── Dark mode token overrides ──────────────────────────────── */
+.dark {
+  --color-bg:        #0d1117;
+  --color-surface:   #161b22;
+  --color-border:    #30363d;
+  --color-text:      #e6edf3;
+  --color-secondary: #8b949e;
+}
+
+/* ── Layout dimensions ──────────────────────────────────────── */
+:root {
+  --sidebar-width:           220px;
+  --sidebar-collapsed-width: 56px;
+  --header-height:           56px;
+  --transition:              0.2s ease;
+}
+
+/* ── Base ───────────────────────────────────────────────────── */
+@layer base {
+  body {
+    @apply bg-bg text-text text-sm leading-normal antialiased;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+  button { background: none; font: inherit; }
+  input  { font: inherit; }
+}
+
+
+/* ── App layout ─────────────────────────────────────────────── */
+@layer components {
+  /* Mobile: sidebar es overlay, main ocupa todo */
+  .app-layout       { @apply h-screen overflow-hidden; }
+  .app-layout__main { display: grid; grid-template-rows: var(--header-height) 1fr; @apply overflow-hidden h-screen; }
+  .app-layout__content { @apply overflow-y-auto p-4 lg:p-6; }
+
+  /* Desktop: sidebar entra al grid */
+  @media (min-width: 1024px) {
+    .app-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      transition: grid-template-columns var(--transition);
+    }
+    .app-layout--collapsed { grid-template-columns: var(--sidebar-collapsed-width) 1fr; }
+    .app-layout__main      { @apply h-auto; }
+  }
+}

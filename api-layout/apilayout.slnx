@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/apilayout.Api/apilayout.Api.csproj" />
+    <Project Path="src/apilayout.Application/apilayout.Application.csproj" />
+    <Project Path="src/apilayout.Domain/apilayout.Domain.csproj" />
+    <Project Path="src/apilayout.Infrastructure/apilayout.Infrastructure.csproj" />
+  </Folder>
+</Solution>
