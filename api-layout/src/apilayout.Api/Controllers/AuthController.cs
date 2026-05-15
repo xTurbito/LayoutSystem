@@ -57,11 +57,15 @@ public class AuthController(IAuthService authService, IUserService userService, 
 
     private void SetRefreshTokenCookie(string token, DateTime expires)
     {
+        var isProd = !HttpContext.RequestServices
+            .GetRequiredService<IWebHostEnvironment>()
+            .IsDevelopment();
+
         Response.Cookies.Append("refresh_token", token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = isProd,
+            SameSite = isProd ? SameSiteMode.Strict : SameSiteMode.Lax,
             Expires = expires,
             Path = "/"
         });
