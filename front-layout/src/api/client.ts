@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'sonner';
 
-export const USER_KEY = 'auth_user';
+export const USER_KEY = 'auth_user:v1';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 

@@ -34,6 +34,7 @@ public class AuthService(
             .Include(u => u.Role)
                 .ThenInclude(r => r.RoleModules)
                     .ThenInclude(rm => rm.Module)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive, ct);
 
         var hashToVerify = user?.PasswordHash ?? _dummyHash;
@@ -74,6 +75,7 @@ public class AuthService(
                     .ThenInclude(r => r.RoleModules)
                         .ThenInclude(rm => rm.Module)
             .AsNoTracking()
+            .AsSplitQuery()
             .FirstOrDefaultAsync(rt => rt.Token == hashedToken, ct);
 
         if (existing is null || !existing.IsActive || !existing.User.IsActive)

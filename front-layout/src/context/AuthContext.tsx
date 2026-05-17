@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (credentials: LoginRequest) => {
     const response = await authApi.login(credentials);
-    localStorage.setItem(USER_KEY, JSON.stringify(response.user));
+    try { localStorage.setItem(USER_KEY, JSON.stringify(response.user)); } catch { /* incognito/quota */ }
     setUser(response.user);
     navigate('/dashboard');
   }, [navigate]);
