@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ModuleAction, type ModuleActionValue } from '../../../types/index';
@@ -31,6 +31,8 @@ export function useRoleActivities(roleId: string) {
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   // moduleKey → bitflag actual
   const [permissions, setPermissions] = useState<Record<string, number>>({});
+  // Espejo síncrono de permissions: evita closures stale en clicks rápidos consecutivos
+  const permissionsRef = useRef<Record<string, number>>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ['role-activities', roleId],
@@ -46,6 +48,7 @@ export function useRoleActivities(roleId: string) {
         perms[mod.key] = mod.actions;
       }
       setPermissions(perms);
+      permissionsRef.current = perms;
       setExpandedModules(new Set(data.modules.map(m => m.id)));
     }
   }, [data]);
@@ -88,6 +91,7 @@ export function useRoleActivities(roleId: string) {
         const perms: Record<string, number> = {};
         for (const mod of data.modules) perms[mod.key] = mod.actions;
         setPermissions(perms);
+        permissionsRef.current = perms;
       }
     },
   });
@@ -98,14 +102,16 @@ export function useRoleActivities(roleId: string) {
     activityKey: string,
   ) => {
     const bit = ACTION_BIT[activityKey] ?? ModuleAction.None;
-    const current = permissions[moduleKey] ?? 0;
+    const current = permissionsRef.current[moduleKey] ?? 0;
     const isEnabled = (current & bit) === bit;
     const newActions = isEnabled ? current & ~bit : current | bit;
 
-    // Optimistic update
-    setPermissions(prev => ({ ...prev, [moduleKey]: newActions }));
+    // Optimistic update — ref síncrono para no perder clicks rápidos consecutivos
+    const next = { ...permissionsRef.current, [moduleKey]: newActions };
+    permissionsRef.current = next;
+    setPermissions(next);
     mutation.mutate({ moduleId, actions: newActions });
-  }, [permissions, mutation]);
+  }, [mutation]);
 
   return {
     role: data?.role,

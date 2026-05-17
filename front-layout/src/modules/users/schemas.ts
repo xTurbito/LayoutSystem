@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { passwordComplexity } from '../../schemas/password';
 
 export interface UserFormValues {
     name: string;
@@ -8,12 +9,6 @@ export interface UserFormValues {
     confirmPassword: string;
     isActive?: boolean;
 }
-
-const passwordComplexity = z.string()
-    .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .regex(/[A-Z]/, 'Debe tener al menos una letra mayúscula')
-    .regex(/[0-9]/, 'Debe tener al menos un número')
-    .regex(/[^a-zA-Z0-9]/, 'Debe tener al menos un carácter especial')
 
   const baseUserSchema = z.object({
     name: z.string().min(1, 'El nombre es requerido').max(100, 'Máximo 100 caracteres'),

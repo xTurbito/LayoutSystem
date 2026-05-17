@@ -6,7 +6,6 @@ import {
   PanelLeftOpen,
   LayoutDashboard,
   LayoutGrid,
-  Settings,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '../../context/AuthContext';
@@ -119,23 +118,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           );
         })}
       </nav>
-
-      {/* Footer */}
-      <div className="flex flex-col shrink-0 py-2">
-        <div className="border-t border-border my-1 mx-3" />
-
-        <NavLink
-          to="/settings"
-          className={({ isActive }) => linkClass(isActive)}
-          aria-label={collapsed ? 'Configuración' : undefined}
-          onMouseEnter={(e) => showTooltip(e, 'Configuración')}
-          onMouseLeave={() => setTooltip(null)}
-        >
-          <Settings size={16} />
-          {!collapsed && <span>Configuración</span>}
-        </NavLink>
-
-      </div>
 
     </aside>
   );

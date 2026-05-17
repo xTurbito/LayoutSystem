@@ -1,11 +1,5 @@
 import { z } from 'zod';
-
-
-const passwordComplexity = z.string()
-    .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .regex(/[A-Z]/, 'Debe tener al menos una letra mayúscula')
-    .regex(/[0-9]/, 'Debe tener al menos un número')
-    .regex(/[^a-zA-Z0-9]/, 'Debe tener al menos un carácter especial')
+import { passwordComplexity } from '../../schemas/password';
 
 
 export const PasswordSchema = z.object({

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { Pencil, Plus } from 'lucide-react';
 import clsx from 'clsx';
@@ -98,14 +98,14 @@ export default function UserList() {
     setShowDlg(true);
   }
 
-  function openEdit(u: UserItem) {
+  const openEdit = useCallback((u: UserItem) => {
     setEditUser(u);
     setShowDlg(true);
-  }
+  }, []);
 
   const columns = useMemo(
     () => getColumns(canEdit, openEdit),
-    [canEdit]
+    [canEdit, openEdit]
   );
 
   return (

@@ -8,6 +8,7 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema } from '../schemas/auth';
+import { getApiError } from '../api/errors';
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -18,7 +19,7 @@ export function LoginPage() {
 
   const mutation = useMutation({
     mutationFn: (data: LoginRequest) => login(data),
-    onError: () => toast.error('Credenciales incorrectas. Intenta de nuevo.'),
+    onError: (error) => toast.error(getApiError(error, 'No se pudo iniciar sesión.')),
   });
 
   const isLoading = mutation.isPending || isSubmitting;

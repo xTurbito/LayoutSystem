@@ -1,10 +1,7 @@
 import { apiClient, setAuthToken } from './client';
+import { ModuleAction } from '../types';
 import type { LoginRequest, LoginResponse, User } from '../types';
 import type { ChangePasswordDto, UpdateProfileDto } from '../modules/profile/type';
-
-const ACTION_MAP: Record<string, number> = {
-  View: 1, Create: 2, Edit: 4, Delete: 8, Export: 16,
-};
 
 function mapToUser(raw: LoginResponse): User {
   return {
@@ -19,7 +16,7 @@ function mapToUser(raw: LoginResponse): User {
         route: m.route ?? '',
         order: m.order,
         isActive: true,
-        actions: m.actions.reduce((acc, a) => acc | (ACTION_MAP[a] ?? 0), 0),
+        actions: m.actions.reduce((acc, a) => acc | (ModuleAction[a as keyof typeof ModuleAction] ?? 0), 0),
       })),
     },
   };

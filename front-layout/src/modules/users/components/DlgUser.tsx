@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { User as UserIcon } from 'lucide-react';
 import ModalShell from '../../../components/ui/ModalShell';
@@ -47,7 +47,8 @@ export default function DlgUser({ open, onClose, user }: DlgUserProps) {
 
   const { register, handleSubmit, reset, formState: { errors } } =
     useForm<UserFormValues>({
-      resolver: zodResolver(isEditing ? updateUserSchema : createUserSchema) as any, defaultValues,
+      resolver: zodResolver(isEditing ? updateUserSchema : createUserSchema) as Resolver<UserFormValues>,
+      defaultValues,
     })
 
   // Limpiar el form inmediatamente cuando cambia el usuario objetivo
