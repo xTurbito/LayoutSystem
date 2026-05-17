@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { AxiosError } from "axios";
 import { authApi } from "../../../api/auth";
+import { getApiError } from "../../../api/errors";
 import type { ChangePasswordDto, UpdateProfileDto } from "../type";
 
 export function useProfileMutation() {
@@ -14,18 +14,18 @@ export function useProfileMutation() {
             queryClient.invalidateQueries({ queryKey: ['profile'], exact: false });
             queryClient.invalidateQueries({ queryKey: ['user'], exact: false });
         },
-        onError: (error: AxiosError<string>) => {
-            toast.error(error.response?.data ?? 'Error al actualizar la información');
+        onError: (error) => {
+            toast.error(getApiError(error, 'Error al actualizar la información'));
         },
     })
 
     const changePassword = useMutation({
         mutationFn: (data: ChangePasswordDto) => authApi.changePassword(data),
         onSuccess: () => {
-            toast.success('Contraseña actualizada correctamente');
+            toast.success('Contraseña actualizada. Inicia sesión de nuevo.');
         },
-        onError: (error: AxiosError<string>) => {
-            toast.error(error.response?.data ?? 'Error al actualizar la contraseña');
+        onError: (error) => {
+            toast.error(getApiError(error, 'Error al actualizar la contraseña'));
         },
     })
 

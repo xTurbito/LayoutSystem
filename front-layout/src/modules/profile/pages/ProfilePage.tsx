@@ -4,6 +4,7 @@ import Input from "../../../components/ui/Input"
 import Button from "../../../components/ui/Button"
 import { useProfile } from "../hooks/useProfile"
 import { useProfileMutation } from "../hooks/useProfileMutation"
+import { useAuth } from "../../../context/AuthContext"
 import { PasswordSchema, ProfileInfoSchema } from "../schemas"
 import type { ChangePasswordFormValues, ProfileInfoFormValues } from "../schemas"
 
@@ -11,6 +12,7 @@ export default function ProfilePage() {
 
   const { profile, isLoading, isError } = useProfile();
   const { updateInfo, changePassword } = useProfileMutation();
+  const { logout } = useAuth();
 
   const infoForm = useForm<ProfileInfoFormValues>({
     resolver: zodResolver(ProfileInfoSchema),
@@ -30,7 +32,10 @@ export default function ProfilePage() {
 
   const onChangePassword = (data: ChangePasswordFormValues) => {
     changePassword.mutate({ currentPassword: data.currentPassword, newPassword: data.password }, {
-      onSuccess: () => passwordForm.reset(),
+      onSuccess: () => {
+        passwordForm.reset();
+        logout();
+      },
     })
   }
 

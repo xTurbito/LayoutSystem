@@ -54,6 +54,13 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !isLoginEndpoint && !isRefreshEndpoint) {
       const originalRequest = error.config;
 
+      // Si ya se reintentó una vez y volvió a dar 401, el token no sirve: cortar.
+      if (originalRequest._retry) {
+        clearSession();
+        return Promise.reject(error);
+      }
+      originalRequest._retry = true;
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           pendingQueue.push({ resolve, reject });

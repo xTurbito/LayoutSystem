@@ -39,12 +39,17 @@ function PageLoader() {
   );
 }
 
-// Redirige a 404 si el usuario no tiene acceso (actions === 0) al módulo de la ruta actual
+// Rutas accesibles para todo usuario autenticado (no están gateadas por módulo)
+const ALWAYS_ALLOWED = new Set(['dashboard', 'perfil']);
+
+// Redirige a 404 si el usuario no tiene el módulo de la ruta actual
 function ModuleGuard() {
   const { user } = useAuth();
   const { pathname } = useLocation();
-  const mod = user?.role.modules.find(m => m.route === `/${pathname.split('/')[1]}`);
-  if (mod && mod.actions === 0) return <Navigate to="/not-found" replace />;
+  const segment = pathname.split('/')[1];
+  if (ALWAYS_ALLOWED.has(segment)) return <Outlet />;
+  const mod = user?.role.modules.find(m => m.route === `/${segment}`);
+  if (!mod || mod.actions === 0) return <Navigate to="/not-found" replace />;
   return <Outlet />;
 }
 
