@@ -23,6 +23,7 @@ public class AuthService(
     ICurrentUserContext currentUser) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
+    private static readonly string _dummyHash = BCrypt.Net.BCrypt.HashPassword("__dummy__");
 
     public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request, CancellationToken ct = default)
     {
@@ -35,7 +36,10 @@ public class AuthService(
                     .ThenInclude(rm => rm.Module)
             .FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive, ct);
 
-        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        var hashToVerify = user?.PasswordHash ?? _dummyHash;
+        var isValidPassword = BCrypt.Net.BCrypt.Verify(request.Password, hashToVerify);
+
+        if (user is null || !isValidPassword)
         {
             await auditLog.LogAsync(new AuditLogEntry(
                 AuditAction.Login,
