@@ -78,17 +78,53 @@ src/
 
 ### Backend
 
-```bash
-# 1. Configurar base de datos en appsettings.json
-# 2. Aplicar migraciones
-dotnet ef database update --project src/apilayout.Infrastructure --startup-project src/apilayout.Api
+Los secretos **no se guardan en el repo**. `appsettings.json` solo tiene placeholders;
+los valores reales se cargan desde user-secrets (desarrollo) o variables de entorno (producción).
 
-# 3. Levantar API (puerto 5069 por defecto)
-cd src/apilayout.Api
+```bash
+cd api-layout/src/apilayout.Api
+
+# 1. Inicializar user-secrets — genera un UserSecretsId único en el .csproj
+dotnet user-secrets init
+
+# 2. Configurar los secretos (viven fuera del repo, en tu carpeta de usuario)
+dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=layoutsystem;Username=TU_USER;Password=TU_PASS"
+dotnet user-secrets set "Jwt:Key" "un-secreto-de-minimo-32-caracteres"
+
+# 3. Aplicar migraciones
+dotnet ef database update --project ../apilayout.Infrastructure --startup-project .
+
+# 4. Levantar API (http://localhost:5000)
 dotnet run
 ```
 
-> En producción es obligatorio cambiar `Jwt:Key` por un secreto seguro de al menos 32 caracteres, ya sea en variables de entorno o en `appsettings.Production.json`.
+#### Secretos y configuración
+
+| | Desarrollo | Producción |
+|---|---|---|
+| Cómo se cargan | user-secrets (automático en entorno `Development`) | variables de entorno |
+| Dónde viven | `~/.microsoft/usersecrets/{UserSecretsId}/secrets.json` | el entorno del servidor |
+| En el repo | solo placeholders en `appsettings.json` | — |
+
+El `UserSecretsId` del `.csproj` es el único enlace: .NET arma con él la ruta del archivo
+de secretos y lo carga solo. No se commitea ningún valor real, únicamente ese ID.
+
+En producción las variables de entorno reemplazan `:` por `__`:
+
+```bash
+export ConnectionStrings__Default="Host=...;Password=..."
+export Jwt__Key="..."
+```
+
+Comandos de user-secrets (ejecutar desde `api-layout/src/apilayout.Api`):
+
+```bash
+dotnet user-secrets list                 # ver todos
+dotnet user-secrets set "Clave" "valor"   # agregar o cambiar
+dotnet user-secrets remove "Clave"        # borrar uno
+```
+
+> `Jwt:Key` debe tener mínimo 32 caracteres. La API valida esto al arrancar y se detiene si no se cumple.
 
 ### Frontend
 
