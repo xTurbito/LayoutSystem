@@ -55,8 +55,12 @@ public class RolesController(IRolesService rolesService) : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Policy = "Roles.Edit")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRoleDto dto, CancellationToken ct = default)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRoleDto dto, IValidator<UpdateRoleDto> validator, CancellationToken ct = default)
     {
+        var validation = await validator.ValidateAsync(dto, ct);
+        if (!validation.IsValid)
+            return BadRequest(new { message = string.Join(", ", validation.Errors.Select(e => e.ErrorMessage)) });
+
         var result = await rolesService.UpdateRoleAsync(id, dto, ct);
         if (!result.IsSuccess) return BadRequest(new { message = result.Error });
         return NoContent();
@@ -73,8 +77,12 @@ public class RolesController(IRolesService rolesService) : ControllerBase
 
     [HttpPatch("{id}/permissions")]
     [Authorize(Policy = "Roles.Edit")]
-    public async Task<IActionResult> UpdatePermission(Guid id, [FromBody] UpdateRolePermissionDto dto, CancellationToken ct = default)
+    public async Task<IActionResult> UpdatePermission(Guid id, [FromBody] UpdateRolePermissionDto dto, IValidator<UpdateRolePermissionDto> validator, CancellationToken ct = default)
     {
+        var validation = await validator.ValidateAsync(dto, ct);
+        if (!validation.IsValid)
+            return BadRequest(new { message = string.Join(", ", validation.Errors.Select(e => e.ErrorMessage)) });
+
         var result = await rolesService.UpdatePermissionAsync(id, dto, ct);
         if (!result.IsSuccess)
             return BadRequest(new { message = result.Error });

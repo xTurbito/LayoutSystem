@@ -20,5 +20,8 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .WithMany(u => u.RefreshTokens)
             .HasForeignKey(rt => rt.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Coincide con el filtro soft-delete de User: evita tokens con User null al hacer Include
+        builder.HasQueryFilter(rt => !rt.User.IsDeleted);
     }
 }

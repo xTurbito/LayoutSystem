@@ -24,5 +24,8 @@ public class RoleModuleConfiguration : IEntityTypeConfiguration<RoleModule>
             .WithMany(m => m.RoleModules)
             .HasForeignKey(rm => rm.ModuleId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Coincide con los filtros soft-delete de Role y Module
+        builder.HasQueryFilter(rm => !rm.Role.IsDeleted && !rm.Module.IsDeleted);
     }
 }

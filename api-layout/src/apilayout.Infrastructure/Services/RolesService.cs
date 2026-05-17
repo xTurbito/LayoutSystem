@@ -16,6 +16,7 @@ public class RolesService(AppDbContext db, IAuditLogService auditLog, ICurrentUs
     public async Task<Result<List<RolesSelectDto>>> GetActiveRolesAsync(CancellationToken ct = default)
     {
         var roles = await db.Roles.AsNoTracking()
+            .Where(r => r.IsActive)
             .Select(r => new RolesSelectDto(r.Id, r.Name))
             .ToListAsync(ct);
 
@@ -38,6 +39,9 @@ public class RolesService(AppDbContext db, IAuditLogService auditLog, ICurrentUs
 
     public async Task<Result> CreateRoleAsync(CreateRoleDto dto, CancellationToken ct = default)
     {
+        if (await db.Roles.AnyAsync(r => r.Name == dto.Name, ct))
+            return Result.Failure("Ya existe un rol con ese nombre.");
+
         var role = new Role
         {
             Name = dto.Name,
