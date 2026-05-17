@@ -1,4 +1,5 @@
 using apilayout.Application.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using apilayout.Application.DTOs.Roles;
@@ -28,8 +29,12 @@ public class RolesController(IRolesService rolesService) : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = "Roles.Create")]
-    public async Task<IActionResult> Create([FromBody] CreateRoleDto dto, CancellationToken ct = default)
+    public async Task<IActionResult> Create([FromBody] CreateRoleDto dto, IValidator<CreateRoleDto> validator, CancellationToken ct = default)
     {
+        var validation = await validator.ValidateAsync(dto, ct);
+        if (!validation.IsValid)
+            return BadRequest(new { message = string.Join(", ", validation.Errors.Select(e => e.ErrorMessage)) });
+
         var result = await rolesService.CreateRoleAsync(dto, ct);
         if (!result.IsSuccess)
             return BadRequest(new { message = result.Error });

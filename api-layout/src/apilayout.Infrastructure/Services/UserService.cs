@@ -114,6 +114,11 @@ public class UserService(AppDbContext db, IAuditLogService auditLog, ICurrentUse
 
         await db.SaveChangesAsync(ct);
 
+        if (!dto.IsActive || !string.IsNullOrWhiteSpace(dto.Password))
+            await db.RefreshTokens
+                .Where(rt => rt.UserId == id)
+                .ExecuteDeleteAsync(ct);
+
         await auditLog.LogAsync(new AuditLogEntry(
             AuditAction.Edit,
             currentUser.Email ?? "unknown",
@@ -162,6 +167,10 @@ public class UserService(AppDbContext db, IAuditLogService auditLog, ICurrentUse
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
         await db.SaveChangesAsync(ct);
+
+        await db.RefreshTokens
+            .Where(rt => rt.UserId == id)
+            .ExecuteDeleteAsync(ct);
 
         await auditLog.LogAsync(new AuditLogEntry(
             AuditAction.Edit,
