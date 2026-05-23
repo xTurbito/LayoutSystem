@@ -44,6 +44,8 @@ export default function Input({
           id={name}
           name={name}
           type={isPassword ? (showPassword ? 'text' : 'password') : type}
+          aria-invalid={errorMessage ? true : undefined}
+          aria-describedby={errorMessage && name ? `${name}-error` : undefined}
           className={`block w-full rounded-md border bg-surface py-2 ${pl} ${pr} text-text placeholder:text-secondary transition-colors duration-150 outline-none ${borderClasses} ${className}`}
           {...rest}
           {...(isPassword && { autoComplete: 'current-password' })}

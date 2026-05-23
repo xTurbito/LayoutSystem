@@ -4,6 +4,7 @@ import { Pencil, Plus } from 'lucide-react';
 import clsx from 'clsx';
 import GenericTable from '../../../components/ui/Table';
 import GenericSelect from '../../../components/ui/Select';
+import StatusBadge from '../../../components/ui/StatusBadge';
 import { useModulePermissions } from '../../../hooks/useModulePermissions';
 import { useUsers } from '../hooks/useUsers';
 import type { UserItem } from '../types';
@@ -48,14 +49,7 @@ function getColumns(canEdit: boolean, onEdit: (user: UserItem) => void): ColumnD
     {
       accessorKey: 'isActive',
       header: 'Estado',
-      cell: ({ getValue }) => {
-        const value = getValue<boolean>();
-        return (
-          <span className={clsx('inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold', value ? 'bg-green-500 text-white' : 'bg-border text-secondary')}>
-            {value ? 'Activo' : 'Inactivo'}
-          </span>
-        );
-      },
+      cell: ({ getValue }) => <StatusBadge active={getValue<boolean>()} />,
     },
   ];
 

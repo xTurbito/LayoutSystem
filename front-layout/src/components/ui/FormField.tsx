@@ -19,7 +19,15 @@ export default function FormField({ label, name, disclaimer, error, children, cl
         </label>
       )}
       {children}
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && (
+        <p
+          id={name ? `${name}-error` : undefined}
+          role="alert"
+          className="text-xs text-red-500 mt-1"
+        >
+          {error}
+        </p>
+      )}
       {disclaimer && (
         <div className="flex items-center gap-1 mt-1.5">
           <CircleAlert className="w-4 h-4 text-secondary" />

@@ -90,7 +90,7 @@ export default function RoleList() {
                   {canDelete && (
                     <button
                       onClick={(e) => openDelete(e, role)}
-                      className="p-1.5 rounded-md text-secondary hover:text-red-600 hover:bg-red-50 transition-colors"
+                      className="p-1.5 rounded-md text-secondary hover:text-red-600 hover:bg-red-500/10 transition-colors"
                     >
                       <Trash2 size={14} />
                     </button>

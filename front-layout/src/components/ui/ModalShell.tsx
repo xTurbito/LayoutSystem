@@ -10,27 +10,74 @@ interface ModalShellProps {
   children: ReactNode;
 }
 
+const FOCUSABLE =
+  'a[href],area[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
 export default function ModalShell({
   open,
   onClose,
   title,
   icon,
   description,
-  children
+  children,
 }: ModalShellProps) {
   const [mounted, setMounted] = useState(open);
   const closing = mounted && !open;
-
-  useEffect(() => {
-    if (open) setMounted(true);
-  }, [open]);
-
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lastFocused = useRef<HTMLElement | null>(null);
   const onCloseRef = useRef(onClose);
   useEffect(() => { onCloseRef.current = onClose; });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (open) setMounted(true);
+  }, [open]);
+
+  // Focus inicial + bloqueo de scroll del body + restaurar foco al cerrar
+  useEffect(() => {
     if (!open) return;
-    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onCloseRef.current(); };
+    lastFocused.current = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    dialogRef.current?.focus(); // el lector de pantalla anuncia el título
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      lastFocused.current?.focus?.();
+    };
+  }, [open]);
+
+  // Escape + focus trap (Tab no escapa; onCloseRef evita re-montar el listener)
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const node = dialogRef.current;
+      if (!node) return;
+      const items = Array.from(
+        node.querySelectorAll<HTMLElement>(FOCUSABLE),
+      ).filter((el) => el.offsetParent !== null);
+      if (items.length === 0) {
+        e.preventDefault();
+        node.focus();
+        return;
+      }
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !node.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !node.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open]);
@@ -43,15 +90,17 @@ export default function ModalShell({
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className={`bg-surface rounded-2xl shadow-2xl mx-auto border border-border relative w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col ${closing ? 'animate-[modal-out_200ms_ease-in_forwards]' : 'animate-[modal-in_220ms_ease-out_forwards]'}`}
+        tabIndex={-1}
+        className={`bg-surface rounded-2xl shadow-2xl mx-auto border border-border relative w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col outline-none ${closing ? 'animate-[modal-out_200ms_ease-in_forwards]' : 'animate-[modal-in_220ms_ease-out_forwards]'}`}
         onClick={(e) => e.stopPropagation()}
         onAnimationEnd={() => { if (closing) setMounted(false); }}
       >
         <button
-          className="absolute top-3 right-3 sm:top-4 sm:right-4 text-secondary hover:text-text transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-md"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 text-secondary hover:text-text transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-md cursor-pointer"
           onClick={onClose}
           aria-label="Cerrar"
           type="button"

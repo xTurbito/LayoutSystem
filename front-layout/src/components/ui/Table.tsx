@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import {
   flexRender,
   useReactTable,
@@ -60,11 +60,25 @@ export default function GenericTable<T>({
 }: GenericTableProps<T>) {
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+  }, []);
 
   function handleSearch(value: string) {
-    setSearch(value);
-    onPageChange(0);
-    onSearchChange?.(value);
+    setSearch(value); // valor del input siempre instantáneo
+    // Filtro cliente: reset de página inmediato (useMemo refiltra local)
+    if (!onSearchChange) {
+      onPageChange(0);
+      return;
+    }
+    // Filtro servidor: debounce para no disparar query por cada tecla
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onPageChange(0);
+      onSearchChange(value);
+    }, 300);
   }
 
   const filteredData = useMemo(
