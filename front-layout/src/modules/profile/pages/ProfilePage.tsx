@@ -76,7 +76,7 @@ export default function ProfilePage() {
                   <h2 className="text-lg font-bold">Información Personal</h2>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 px-6 pt-4 pb-6 bg-bg/50 w-full">
-                  <Input label="Nombre Completo" type="text" containerClassName="flex-1" {...infoForm.register('name')} errorMessage={infoForm.formState.errors.name?.message} />
+                  <Input label="Nombre Completo" inputKind="letters" containerClassName="flex-1" {...infoForm.register('name')} errorMessage={infoForm.formState.errors.name?.message} />
                   <Input label="Email" type="email" containerClassName="flex-1" {...infoForm.register('email')} errorMessage={infoForm.formState.errors.email?.message} />
                 </div>
                 <div className="flex justify-end p-6">

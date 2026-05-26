@@ -88,6 +88,7 @@ export default function DlgUser({ open, onClose, user }: DlgUserProps) {
           <div className="flex flex-col gap-3">
             <Input
               label="Nombre Completo"
+              inputKind="letters"
               placeholder="Ej: Juan Pérez"
               errorMessage={errors.name?.message}
               maxLength={100}

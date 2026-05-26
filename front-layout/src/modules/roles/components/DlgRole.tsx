@@ -53,6 +53,7 @@ export default function DlgRole({ open, onClose, role }: DlgRoleProps) {
         <div className="flex flex-col gap-3">
           <Input
             label="Nombre del Rol"
+            inputKind="letters"
             placeholder="Ej: Supervisor"
             errorMessage={errors.name?.message}
             maxLength={50}
