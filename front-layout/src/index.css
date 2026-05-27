@@ -14,6 +14,12 @@
   --color-accent-hover:  #1d4ed8;
   --color-error:         #e53e3e;
   --color-success:       #38a169;
+  --text-xs:             0.8125rem;
+  --text-sm:             0.9375rem;
+  --text-base:           1.0625rem;
+  --text-lg:             1.1875rem;
+  --text-xl:             1.375rem;
+  --text-2xl:            1.625rem;
 }
 
 /* ── Dark mode token overrides ──────────────────────────────── */
@@ -36,7 +42,7 @@
 /* ── Base ───────────────────────────────────────────────────── */
 @layer base {
   body {
-    @apply bg-bg text-text text-sm leading-normal antialiased;
+    @apply bg-bg text-text text-base leading-normal antialiased;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
   button { background: none; font: inherit; }
