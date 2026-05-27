@@ -9,6 +9,7 @@ export interface ResponsiveTableColumn<T> {
   headerClassName?: string;
   mobileLabel?: ReactNode;
   hideOnMobile?: boolean;
+  mobileRole?: 'primary' | 'meta' | 'actions';
 }
 
 interface ResponsiveTableProps<T> {
@@ -27,6 +28,16 @@ export default function ResponsiveTable<T>({
   if (data.length === 0) {
     return <>{emptyState}</>;
   }
+
+  const mobileColumns = columns.filter((column) => !column.hideOnMobile);
+  const primaryColumn =
+    mobileColumns.find((column) => column.mobileRole === 'primary') ??
+    mobileColumns.find((column) => column.mobileLabel === null) ??
+    mobileColumns[0];
+  const actionColumns = mobileColumns.filter((column) => column.mobileRole === 'actions');
+  const metaColumns = mobileColumns.filter(
+    (column) => column.id !== primaryColumn?.id && column.mobileRole !== 'actions',
+  );
 
   return (
     <div className="rounded-md border border-border bg-white overflow-hidden">
@@ -63,23 +74,35 @@ export default function ResponsiveTable<T>({
 
       <div className="divide-y divide-border md:hidden">
         {data.map((item) => (
-          <div key={getRowKey(item)} className="p-4">
-            <div className="flex flex-col gap-3">
-              {columns
-                .filter((column) => !column.hideOnMobile)
-                .map((column) => (
+          <div key={getRowKey(item)} className="p-3.5">
+            {primaryColumn && (
+              <div className="mb-3 text-left">
+                {primaryColumn.cell(item)}
+              </div>
+            )}
+
+            {metaColumns.length > 0 && (
+              <div className="grid grid-cols-1 gap-2 rounded-md bg-bg/70 px-3 py-2.5">
+                {metaColumns.map((column) => (
                   <div key={column.id} className="flex items-start justify-between gap-4">
-                    {column.mobileLabel !== null && (
-                      <span className="shrink-0 text-xs font-extrabold uppercase text-secondary">
-                        {column.mobileLabel ?? column.header}
-                      </span>
-                    )}
-                    <div className="min-w-0 text-right text-sm text-text">
+                    <span className="shrink-0 text-[11px] font-extrabold uppercase text-secondary">
+                      {column.mobileLabel ?? column.header}
+                    </span>
+                    <div className="min-w-0 text-right text-sm font-semibold text-text">
                       {column.cell(item)}
                     </div>
                   </div>
                 ))}
-            </div>
+              </div>
+            )}
+
+            {actionColumns.length > 0 && (
+              <div className="mt-3 flex items-center justify-end gap-2 border-t border-border pt-3">
+                {actionColumns.map((column) => (
+                  <div key={column.id}>{column.cell(item)}</div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -14,7 +14,7 @@ import Button from '../../../components/ui/Button';
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
 const roleBadge: Record<string, string> = {
-  ADMIN: 'bg-indigo-100 text-indigo-700',
+  ADMIN: 'bg-primary/10 text-primary',
   USUARIO: 'bg-border text-secondary',
 };
 
@@ -127,6 +127,34 @@ export default function UserList() {
         onSearchChange={users.onSearchChange}
         searchPlaceholder="Buscar..."
         summary={`${users.totalCount} usuarios en total`}
+        mobileTitle={(user) => user.name}
+        mobileSubtitle={(user) => user.email}
+        mobileBadges={(user) => <StatusBadge active={user.isActive} />}
+        mobileFields={[
+          {
+            label: 'Rol',
+            value: (user) => (
+              <span className={clsx('inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold', roleBadge[user.role] ?? roleBadge['USUARIO'])}>
+                {user.role}
+              </span>
+            ),
+          },
+        ]}
+        mobileActions={
+          canEdit
+            ? (user) => (
+                <Button
+                  type="button"
+                  label=""
+                  icon={Pencil}
+                  variant="ghost"
+                  aria-label="Editar usuario"
+                  className="p-2 rounded"
+                  onClick={() => openEdit(user)}
+                />
+              )
+            : undefined
+        }
         filters={
           <>
             <GenericSelect
