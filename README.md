@@ -1,147 +1,189 @@
 # LayoutSystem
 
-Template fullstack para sistemas de gestión con autenticación, roles y permisos por módulo. Pensado para usarse como base y escalar según el proyecto.
+Starter kit full-stack para construir sistemas administrativos con autenticacion, roles, permisos por modulo y una base lista para escalar.
 
----
+LayoutSystem no busca ser una aplicacion cerrada. Es una base reutilizable para crear forks por proyecto: paneles internos, backoffices, SaaS verticales, CRMs ligeros, sistemas operativos de negocio o cualquier producto que necesite usuarios, permisos, auditoria y modulos administrativos desde el dia uno.
+
+## Vision
+
+La mayoria de productos administrativos comparten una capa comun: login, usuarios, roles, permisos, rutas protegidas, tablas, formularios, validaciones, auditoria, manejo de sesion y estructura modular.
+
+LayoutSystem empaqueta esa base para que el siguiente proyecto empiece desde una arquitectura ordenada, no desde una carpeta vacia.
 
 ## Stack
 
-### Backend — .NET 10
-| | |
-|---|---|
-| Framework | ASP.NET Core 10 |
-| ORM | Entity Framework Core 10 |
-| Base de datos | PostgreSQL (Npgsql) |
-| Autenticación | JWT + Refresh Token (httpOnly cookie) |
-| Documentación | Scalar / OpenAPI |
-| Logs | Serilog (consola + archivo rotativo) |
-| Hashing | BCrypt.Net |
+### Backend
 
-### Frontend — React 19 + TypeScript
-| | |
-|---|---|
-| Build tool | Vite 7 |
-| Estilos | Tailwind CSS 4 |
-| State / fetching | TanStack Query v5 |
-| Tablas | TanStack Table v8 |
-| Formularios | React Hook Form + Zod |
-| HTTP | Axios |
-| Iconos | Lucide React |
-| Notificaciones | Sonner |
+- .NET 10 Web API
+- Clean Architecture
+- Entity Framework Core 10
+- PostgreSQL con Npgsql
+- JWT access tokens
+- Refresh token en cookie HttpOnly
+- BCrypt para password hashing
+- FluentValidation
+- Serilog
+- Scalar / OpenAPI
+- Rate limiting
+- Security headers
 
----
+### Frontend
+
+- React 19
+- TypeScript
+- Vite 7
+- React Router
+- TanStack Query v5
+- TanStack Table v8
+- React Hook Form
+- Zod
+- Tailwind CSS 4
+- Axios
+- Lucide React
+- Sonner
+
+## Que incluye
+
+- Login con JWT y renovacion automatica de token
+- Refresh tokens rotados y almacenados como hash
+- Cookie HttpOnly para refresh token
+- Control de acceso por rol y modulo
+- Acciones por modulo: `View`, `Create`, `Edit`, `Delete`, `Export`
+- Sidebar dinamico segun permisos
+- Rutas protegidas en frontend
+- Politicas de autorizacion en backend
+- CRUD de usuarios
+- CRUD de roles
+- Asignacion de permisos por modulo
+- Perfil de usuario
+- Cambio de contrasena
+- Revocacion de tokens ante eventos sensibles
+- Audit log
+- Soft delete
+- Paginacion, busqueda y filtros
+- Hooks genericos para listas y mutaciones CRUD
+- Manejo centralizado de errores HTTP
+- Seeding idempotente
+- Configuracion segura con user-secrets y variables de entorno
 
 ## Arquitectura
 
-### Backend — Clean Architecture
+```txt
+api-layout/
+  src/
+    apilayout.Domain/          Entidades, enums y reglas base del dominio
+    apilayout.Application/     DTOs, interfaces, validators y modelos comunes
+    apilayout.Infrastructure/  EF Core, servicios, migraciones y persistencia
+    apilayout.Api/             Controllers, middleware, auth y OpenAPI
 
-```
-apilayout.Api            → Controllers, Middleware, configuración HTTP
-apilayout.Application    → DTOs, Interfaces, Validators, lógica de negocio
-apilayout.Domain         → Entidades, Enums, BaseEntity
-apilayout.Infrastructure → EF Core, Repositories, Servicios, Migraciones
-```
-
-Las capas internas (Domain, Application) no dependen de nada externo. La infraestructura implementa las interfaces definidas en Application.
-
-### Frontend — Feature-based
-
-```
-src/
-├── components/ui/     → Componentes reutilizables (Button, Input, Table, Modal…)
-├── modules/           → Cada módulo agrupa su página, hooks, api, schemas y tipos
-│   ├── dashboard/
-│   ├── roles/
-│   ├── users/
-│   └── profile/
-├── hooks/             → Hooks genéricos (useListQuery, useCrudMutation…)
-├── context/           → AuthContext
-└── router/            → Rutas protegidas por permisos
+front-layout/
+  src/
+    api/                       Cliente HTTP e interceptores
+    components/                UI reutilizable y layout
+    context/                   AuthContext
+    hooks/                     Hooks compartidos
+    modules/                   Modulos funcionales
+    router/                    Rutas protegidas y lazy loading
 ```
 
----
+## Decisiones de diseno
 
-## Funcionalidades incluidas
-
-- Login con JWT y renovación automática de token
-- Control de acceso por rol y módulo (View / Create / Edit / Delete / Export)
-- CRUD de usuarios y roles
-- Soft delete (borrado lógico)
-- Audit log de acciones
-- Paginación, búsqueda y filtros en tablas
-- Rate limiting en endpoints de autenticación
-- Perfil de usuario con cambio de contraseña
-
----
+- Separacion por capas para que el dominio no dependa de infraestructura.
+- Frontend organizado por modulo para evitar una carpeta global de componentes mezclados con logica de negocio.
+- Permisos enviados en el token para construir navegacion y proteger vistas.
+- Backend como fuente de verdad para autorizacion real.
+- Refresh token fuera de JavaScript mediante cookie HttpOnly.
+- Access token en memoria para reducir persistencia innecesaria.
+- Validaciones declarativas en backend y frontend.
+- Auditoria para operaciones relevantes.
+- Base preparada para agregar nuevos modulos sin rearmar la aplicacion.
 
 ## Primeros pasos
 
 ### Backend
 
-Los secretos **no se guardan en el repo**. `appsettings.json` solo tiene placeholders;
-los valores reales se cargan desde user-secrets (desarrollo) o variables de entorno (producción).
+Los secretos no se guardan en el repo. `appsettings.json` contiene placeholders; los valores reales deben vivir en user-secrets durante desarrollo o en variables de entorno en produccion.
 
 ```bash
 cd api-layout/src/apilayout.Api
 
-# 1. Inicializar user-secrets — genera un UserSecretsId único en el .csproj
 dotnet user-secrets init
-
-# 2. Configurar los secretos (viven fuera del repo, en tu carpeta de usuario)
 dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=layoutsystem;Username=TU_USER;Password=TU_PASS"
 dotnet user-secrets set "Jwt:Key" "un-secreto-de-minimo-32-caracteres"
 
-# 3. Aplicar migraciones
 dotnet ef database update --project ../apilayout.Infrastructure --startup-project .
-
-# 4. Levantar API (http://localhost:5000)
 dotnet run
 ```
 
-#### Secretos y configuración
+En desarrollo, la documentacion de la API queda disponible mediante Scalar.
 
-| | Desarrollo | Producción |
-|---|---|---|
-| Cómo se cargan | user-secrets (automático en entorno `Development`) | variables de entorno |
-| Dónde viven | `~/.microsoft/usersecrets/{UserSecretsId}/secrets.json` | el entorno del servidor |
-| En el repo | solo placeholders en `appsettings.json` | — |
+### Frontend
 
-El `UserSecretsId` del `.csproj` es el único enlace: .NET arma con él la ruta del archivo
-de secretos y lo carga solo. No se commitea ningún valor real, únicamente ese ID.
+```bash
+cd front-layout
+cp .env.example .env
+npm install
+npm run dev
+```
 
-En producción las variables de entorno reemplazan `:` por `__`:
+Por defecto el frontend corre en:
+
+```txt
+http://localhost:5173
+```
+
+## Variables importantes
+
+### Backend
+
+```txt
+ConnectionStrings:Default
+Jwt:Key
+Jwt:Issuer
+Jwt:Audience
+Jwt:ExpiresInMinutes
+Jwt:RefreshExpiresInDays
+Cors:AllowedOrigins
+```
+
+En produccion, las variables de entorno reemplazan `:` por `__`:
 
 ```bash
 export ConnectionStrings__Default="Host=...;Password=..."
 export Jwt__Key="..."
 ```
 
-Comandos de user-secrets (ejecutar desde `api-layout/src/apilayout.Api`):
-
-```bash
-dotnet user-secrets list                 # ver todos
-dotnet user-secrets set "Clave" "valor"   # agregar o cambiar
-dotnet user-secrets remove "Clave"        # borrar uno
-```
-
-> `Jwt:Key` debe tener mínimo 32 caracteres. La API valida esto al arrancar y se detiene si no se cumple.
-
 ### Frontend
 
-```bash
-cd front-layout
-cp .env.example .env      # ajustar VITE_API_URL si es necesario
-npm install
-npm run dev               # http://localhost:5173
+```txt
+VITE_API_URL=http://localhost:5000
 ```
-
----
 
 ## Credenciales por defecto
 
-| Campo | Valor |
-|---|---|
-| Email | `correo@correo.com` |
-| Contraseña | `password` |
+El seeder crea un usuario administrador para desarrollo:
 
-Cambiar antes de pasar a producción.
+```txt
+Email: correo@correo.com
+Password: password
+```
+
+Cambia estas credenciales antes de usar la base en un entorno real.
+
+## Roadmap natural
+
+- Modulos de negocio especificos por fork.
+- Multi-tenant.
+- Invitaciones de usuarios.
+- Recuperacion de contrasena.
+- Permisos por organizacion o sucursal.
+- Dashboard con metricas operativas.
+- Notificaciones.
+- Jobs en background.
+- Exportaciones.
+- Integracion con storage externo.
+- Plantillas visuales por vertical.
+
+## Estado
+
+LayoutSystem es un starter kit en evolucion. La base ya incluye seguridad, permisos, auth, auditoria, frontend modular y backend por capas; cada fork puede especializar dominio, UI y reglas de negocio sin empezar desde cero.
