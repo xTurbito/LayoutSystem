@@ -93,7 +93,7 @@ export default function DrawerShell({
 
   return (
     <div
-      className={`fixed inset-0 z-50 bg-black/50 ${closing ? 'animate-[modal-backdrop-out_200ms_ease-in_forwards]' : 'animate-[modal-backdrop-in_200ms_ease-out_forwards]'}`}
+      className="fixed inset-0 z-50"
       onClick={onClose}
     >
       <div
