@@ -49,7 +49,7 @@ export default function Combobox({
           control: ({ isFocused }) =>
             `border rounded-md bg-surface px-2 py-[3px] transition-colors duration-150 ${borderBase} ${isFocused ? borderFocus : ''}`,
           menu: () =>
-            'bg-surface border border-border rounded-md shadow-lg mt-1 overflow-hidden z-50',
+            'bg-surface border border-border rounded-md shadow-lg mt-1 overflow-hidden z-50 origin-top motion-safe:animate-[stagger-in_150ms_cubic-bezier(0.2,0,0,1)] motion-reduce:animate-none',
           option: ({ isFocused, isSelected }) =>
             `px-3 py-2 text-sm cursor-pointer ${isSelected ? 'font-semibold text-primary' : 'text-text'} ${isFocused ? 'bg-bg' : ''}`,
           placeholder: () => 'text-secondary text-sm',

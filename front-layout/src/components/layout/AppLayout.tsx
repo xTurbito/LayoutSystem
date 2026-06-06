@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
@@ -7,6 +7,7 @@ import { Header } from './Header';
 export function AppLayout() {
   const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1024);
   const toggle = () => setCollapsed((c) => !c);
+  const location = useLocation();
 
   return (
     <div className={clsx('app-layout', collapsed && 'app-layout--collapsed')}>
@@ -32,7 +33,9 @@ export function AppLayout() {
       <div className="app-layout__main">
         <Header onMenuClick={toggle} />
         <main id="main-content" className="app-layout__content">
-          <Outlet />
+          <div key={location.pathname} className="animate-page-in">
+            <Outlet />
+          </div>
         </main>
       </div>
 

@@ -166,17 +166,21 @@ export default function GenericTable<T>({
           <tbody className="bg-surface">
             {isLoading ? (
               Array.from({ length: skeletonRows }).map((_, i) => (
-                <tr key={i} className="animate-pulse">
+                <tr key={i}>
                   {columns.map((_, j) => (
                     <td key={j} className="px-3 sm:px-6 py-3 sm:py-4">
-                      <div className="h-4 bg-border rounded w-3/4" />
+                      <div className="skeleton-box h-4 rounded w-3/4" />
                     </td>
                   ))}
                 </tr>
               ))
             ) : table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map(row => (
-                <tr key={row.id} className="hover:bg-primary/5 transition-colors border-b border-border last:border-0">
+              table.getRowModel().rows.map((row, i) => (
+                <tr
+                  key={row.id}
+                  className="animate-stagger-in hover:bg-primary/5 transition-colors border-b border-border last:border-0"
+                  style={{ '--row-i': Math.min(i, 12) } as React.CSSProperties}
+                >
                   {row.getVisibleCells().map(cell => (
                     <td key={cell.id} className="px-3 sm:px-6 py-3 sm:py-4 text-sm">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -204,17 +208,21 @@ export default function GenericTable<T>({
           {isLoading ? (
             <div className="divide-y divide-border">
               {Array.from({ length: Math.min(skeletonRows, 4) }).map((_, index) => (
-                <div key={index} className="p-3.5 animate-pulse">
-                  <div className="h-4 w-2/3 rounded bg-border" />
-                  <div className="mt-2 h-3 w-1/2 rounded bg-border" />
-                  <div className="mt-4 h-20 rounded-md bg-border" />
+                <div key={index} className="p-3.5">
+                  <div className="skeleton-box h-4 w-2/3 rounded" />
+                  <div className="skeleton-box mt-2 h-3 w-1/2 rounded" />
+                  <div className="skeleton-box mt-4 h-20 rounded-md" />
                 </div>
               ))}
             </div>
           ) : table.getRowModel().rows.length > 0 ? (
             <div className="divide-y divide-border">
-              {table.getRowModel().rows.map((row) => (
-                <article key={row.id} className="p-3.5">
+              {table.getRowModel().rows.map((row, i) => (
+                <article
+                  key={row.id}
+                  className="animate-stagger-in p-3.5"
+                  style={{ '--row-i': Math.min(i, 12) } as React.CSSProperties}
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-sm font-black text-text">

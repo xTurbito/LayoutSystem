@@ -36,7 +36,8 @@ export default function Button({
       title={label ? undefined : rest['aria-label']}
       className={clsx(
         'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold',
-        'transition-colors duration-200 cursor-pointer',
+        'transition duration-200 cursor-pointer',
+        'motion-safe:active:scale-[0.98] motion-reduce:transform-none disabled:active:scale-100',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
         'disabled:opacity-60 disabled:cursor-not-allowed',
         variantClasses[variant],
