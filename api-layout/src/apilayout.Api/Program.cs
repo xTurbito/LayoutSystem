@@ -151,7 +151,8 @@ try
         ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");
         ctx.Response.Headers.Append("X-Frame-Options", "DENY");
         ctx.Response.Headers.Append("Referrer-Policy", "no-referrer");
-        ctx.Response.Headers.Append("Content-Security-Policy", "default-src 'none'");
+        if (!ctx.Request.Path.StartsWithSegments("/scalar") && !ctx.Request.Path.StartsWithSegments("/openapi"))
+            ctx.Response.Headers.Append("Content-Security-Policy", "default-src 'none'");
         ctx.Response.Headers.Append("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
         if (!app.Environment.IsDevelopment())
             ctx.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
