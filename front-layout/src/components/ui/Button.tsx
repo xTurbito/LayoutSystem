@@ -53,7 +53,7 @@ export default function Button({
         ? <Loader2 className="w-4 h-4 shrink-0 animate-spin" />
         : Icon && <Icon className="w-4 h-4 shrink-0" />
       }
-      <span className="truncate">{label}</span>
+      {label && <span className="truncate">{label}</span>}
     </button>
   );
 }
