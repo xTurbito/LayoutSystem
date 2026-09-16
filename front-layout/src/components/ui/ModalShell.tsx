@@ -1,4 +1,5 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ModalShellProps {
@@ -8,6 +9,13 @@ interface ModalShellProps {
   icon?: ReactNode;
   description?: string;
   children: ReactNode;
+  // 'lg' para superficies de trabajo con layout de dos columnas; el default
+  // deja intactos los diálogos de confirmación existentes.
+  size?: 'sm' | 'lg';
+  hideDivider?: boolean;
+  // Título como label chico/mudo en vez de heading — para diálogos donde el
+  // peso visual debe estar en el contenido (ej. la pregunta de un confirm).
+  subtleTitle?: boolean;
 }
 
 const FOCUSABLE =
@@ -20,12 +28,17 @@ export default function ModalShell({
   icon,
   description,
   children,
+  size = 'sm',
+  hideDivider = false,
+  subtleTitle = false,
 }: ModalShellProps) {
   const [mounted, setMounted] = useState(open);
   const closing = mounted && !open;
   const dialogRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
   const onCloseRef = useRef(onClose);
+  const titleId = useId();
+  const descriptionId = useId();
   useEffect(() => { onCloseRef.current = onClose; });
 
   useEffect(() => {
@@ -50,6 +63,7 @@ export default function ModalShell({
   useEffect(() => {
     if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (dialogRef.current && !dialogRef.current.contains(document.activeElement)) return;
       if (e.key === 'Escape') {
         onCloseRef.current();
         return;
@@ -84,23 +98,24 @@ export default function ModalShell({
 
   if (!mounted) return null;
 
-  return (
+  return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 ${closing ? 'animate-[modal-backdrop-out_200ms_ease-in_forwards]' : 'animate-[modal-backdrop-in_200ms_ease-out_forwards]'}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] p-4 ${closing ? 'animate-[modal-backdrop-out_200ms_ease-in_forwards]' : 'animate-[modal-backdrop-in_200ms_ease-out_forwards]'}`}
       onClick={onClose}
     >
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
-        className={`bg-surface rounded-2xl shadow-2xl mx-auto border border-border relative w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col outline-none ${closing ? 'animate-[modal-out_200ms_ease-in_forwards]' : 'animate-[modal-in_220ms_ease-out_forwards]'}`}
+        className={`relative mx-auto flex max-h-[90vh] w-full flex-col rounded-[var(--radius-sheet)] border border-border bg-surface shadow-[var(--shadow-3)] outline-none ${size === 'lg' ? 'max-w-sm sm:max-w-2xl lg:max-w-4xl' : 'max-w-sm sm:max-w-md'} ${closing ? 'animate-[modal-out_200ms_ease-in_forwards]' : 'animate-[modal-in_220ms_ease-out_forwards]'}`}
         onClick={(e) => e.stopPropagation()}
         onAnimationEnd={() => { if (closing) setMounted(false); }}
       >
         <button
-          className="absolute top-3 right-3 sm:top-4 sm:right-4 text-secondary hover:text-text transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-md cursor-pointer"
+          className="absolute top-2 right-2 z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-secondary material-state hover:bg-primary/8 hover:text-text active:bg-primary/12 material-focus sm:top-3 sm:right-3"
           onClick={onClose}
           aria-label="Cerrar"
           type="button"
@@ -114,15 +129,25 @@ export default function ModalShell({
             </span>
           )}
           <div className="flex flex-col min-w-0">
-            <h2 id="modal-title" className="text-base sm:text-lg font-bold text-text truncate">{title}</h2>
+            <h2
+              id={titleId}
+              className={
+                subtleTitle
+                  ? 'truncate text-xs font-bold uppercase tracking-wide text-secondary'
+                  : 'text-base sm:text-lg font-bold text-text truncate'
+              }
+            >
+              {title}
+            </h2>
             {description && (
-              <p className="text-xs sm:text-sm text-secondary mt-1 line-clamp-2">{description}</p>
+              <p id={descriptionId} className="text-xs sm:text-sm text-secondary mt-1 line-clamp-2">{description}</p>
             )}
           </div>
         </div>
-        <hr className="w-full border-border shrink-0" />
-        <div className="p-4 overflow-y-auto flex-1">{children}</div>
+        {!hideDivider && <hr className="w-full border-border shrink-0" />}
+        <div className="p-4 overflow-y-auto overscroll-contain flex-1">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

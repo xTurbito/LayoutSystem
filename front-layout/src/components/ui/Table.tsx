@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   flexRender,
   useReactTable,
@@ -15,7 +15,11 @@ import PaginationTable from './PaginationTable';
 interface GenericTableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
+  className?: string;
+  tableContainerClassName?: string;
+  mobileContainerClassName?: string;
   summary?: string;
+  showSearch?: boolean;
   searchFields?: (keyof T)[];
   searchPlaceholder?: string;
   filters?: React.ReactNode;
@@ -53,9 +57,13 @@ function filterBySearch<T>(data: T[], searchFields: (keyof T)[] | undefined, sea
 export default function GenericTable<T>({
   columns,
   data,
+  className,
+  tableContainerClassName,
+  mobileContainerClassName,
   summary,
+  showSearch = true,
   searchFields,
-  searchPlaceholder = 'Buscar...',
+  searchPlaceholder = 'Buscar…',
   filters,
   actions,
   page,
@@ -73,25 +81,11 @@ export default function GenericTable<T>({
 }: GenericTableProps<T>) {
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => () => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-  }, []);
 
   function handleSearch(value: string) {
-    setSearch(value); // valor del input siempre instantáneo
-    // Filtro cliente: reset de página inmediato (useMemo refiltra local)
-    if (!onSearchChange) {
-      onPageChange(0);
-      return;
-    }
-    // Filtro servidor: debounce para no disparar query por cada tecla
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      onPageChange(0);
-      onSearchChange(value);
-    }, 300);
+    setSearch(value);
+    onPageChange(0);
+    onSearchChange?.(value);
   }
 
   const filteredData = useMemo(
@@ -109,22 +103,33 @@ export default function GenericTable<T>({
   });
 
   return (
-    <div className="bg-surface rounded-xl border border-border shadow-[0_18px_45px_rgba(63,73,246,0.08)] flex flex-col overflow-hidden">
+    <div className={clsx(
+      'flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-border/70 bg-surface shadow-[var(--shadow-1)]',
+      className,
+    )}>
       {/* Toolbar: búsqueda, filtros, acciones */}
-      <div className="p-3 sm:p-5 border-b border-border bg-white/80 overflow-visible">
+      {(showSearch || filters || actions) && (
+      <div className="overflow-visible border-b border-border/70 bg-surface px-3 py-3 sm:px-5 sm:py-4">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           {/* Izquierda: Search + Filters */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 min-w-0">
-            <div className="w-full sm:flex-1 min-w-0">
-              <SearchInput value={search} onChange={handleSearch} placeholder={searchPlaceholder} />
-            </div>
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 flex-1 min-w-0">
+            {showSearch && (
+              <div className="w-full md:flex-1 min-w-0">
+                <SearchInput
+                  value={search}
+                  onChange={handleSearch}
+                  placeholder={searchPlaceholder}
+                  className="w-full"
+                />
+              </div>
+            )}
             {filters && (
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
+              <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:flex md:w-auto md:shrink-0">
                 {filters}
               </div>
             )}
           </div>
-          
+
           {/* Derecha: Actions */}
           {actions && (
             <div className="flex flex-col sm:flex-row gap-2 justify-end lg:justify-start">
@@ -133,31 +138,47 @@ export default function GenericTable<T>({
           )}
         </div>
       </div>
+      )}
 
       {/* Tabla desktop/tablet */}
       <div className={clsx(
         mobileTitle ? 'hidden overflow-x-auto md:block' : 'overflow-x-auto',
         'flex-1 transition-opacity duration-200',
         isFetching && !isLoading ? 'opacity-50' : 'opacity-100',
+        tableContainerClassName,
       )}>
         <table className="w-full text-left border-collapse">
-          <thead className="bg-[#f0efff] border-b border-border sticky top-0 z-10">
+          <thead className="sticky top-0 z-10 bg-surface">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
                   <th
                     key={header.id}
-                    className={clsx('px-3 sm:px-6 py-3 sm:py-4 text-xs font-extrabold text-text uppercase', header.column.getCanSort() && 'cursor-pointer select-none')}
-                    onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
+                    aria-sort={
+                      header.column.getIsSorted() === 'asc'
+                        ? 'ascending'
+                        : header.column.getIsSorted() === 'desc'
+                          ? 'descending'
+                          : undefined
+                    }
+                    className="px-3 py-3 text-left text-xs font-bold uppercase tracking-wide text-secondary sm:px-6 sm:py-4"
                   >
-                    <span className="flex items-center gap-1">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() && (
-                        header.column.getIsSorted() === 'asc' ? <ChevronUp size={13} /> :
-                        header.column.getIsSorted() === 'desc' ? <ChevronDown size={13} /> :
-                        <ChevronsUpDown size={13} className="opacity-40" />
-                      )}
-                    </span>
+                    {header.column.getCanSort() ? (
+                      <button
+                        type="button"
+                        className="-mx-2 inline-flex min-h-10 cursor-pointer items-center gap-1 rounded-full px-2 text-left font-bold uppercase tracking-wide material-state hover:bg-primary/8 hover:text-text active:bg-primary/12 material-focus"
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
+                        {header.column.getIsSorted() === 'asc' ? <ChevronUp size={13} aria-hidden="true" /> :
+                        header.column.getIsSorted() === 'desc' ? <ChevronDown size={13} aria-hidden="true" /> :
+                        <ChevronsUpDown size={13} className="opacity-50" aria-hidden="true" />}
+                      </button>
+                    ) : (
+                      <span className="inline-flex min-h-10 items-center">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </span>
+                    )}
                   </th>
                 ))}
               </tr>
@@ -169,7 +190,7 @@ export default function GenericTable<T>({
                 <tr key={i}>
                   {columns.map((_, j) => (
                     <td key={j} className="px-3 sm:px-6 py-3 sm:py-4">
-                      <div className="skeleton-box h-4 rounded w-3/4" />
+                      <div className="skeleton-box h-4 w-3/4 rounded" />
                     </td>
                   ))}
                 </tr>
@@ -178,7 +199,7 @@ export default function GenericTable<T>({
               table.getRowModel().rows.map((row, i) => (
                 <tr
                   key={row.id}
-                  className="animate-stagger-in hover:bg-primary/5 transition-colors border-b border-border last:border-0"
+                  className="animate-stagger-in transition-colors hover:bg-primary/5"
                   style={{ '--row-i': Math.min(i, 12) } as React.CSSProperties}
                 >
                   {row.getVisibleCells().map(cell => (
@@ -204,14 +225,18 @@ export default function GenericTable<T>({
 
       {/* Cards mobile */}
       {mobileTitle && (
-        <div className={clsx('md:hidden transition-opacity duration-200', isFetching && !isLoading ? 'opacity-50' : 'opacity-100')}>
+        <div className={clsx(
+          'md:hidden transition-opacity duration-200',
+          isFetching && !isLoading ? 'opacity-50' : 'opacity-100',
+          mobileContainerClassName,
+        )}>
           {isLoading ? (
             <div className="divide-y divide-border">
               {Array.from({ length: Math.min(skeletonRows, 4) }).map((_, index) => (
                 <div key={index} className="p-3.5">
-                  <div className="skeleton-box h-4 w-2/3 rounded" />
-                  <div className="skeleton-box mt-2 h-3 w-1/2 rounded" />
-                  <div className="skeleton-box mt-4 h-20 rounded-md" />
+                  <div className="skeleton-box h-4 w-2/3 rounded-full" />
+                  <div className="skeleton-box mt-2 h-3 w-1/2 rounded-full" />
+                  <div className="skeleton-box mt-4 h-20 rounded-xl" />
                 </div>
               ))}
             </div>
@@ -220,7 +245,7 @@ export default function GenericTable<T>({
               {table.getRowModel().rows.map((row, i) => (
                 <article
                   key={row.id}
-                  className="animate-stagger-in p-3.5"
+                  className="animate-stagger-in p-3.5 transition-colors hover:bg-primary/5"
                   style={{ '--row-i': Math.min(i, 12) } as React.CSSProperties}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -234,31 +259,26 @@ export default function GenericTable<T>({
                         </div>
                       )}
                     </div>
-                    {mobileBadges && (
-                      <div className="shrink-0">
-                        {mobileBadges(row.original)}
+                    {(mobileBadges || mobileActions) && (
+                      <div className="flex shrink-0 items-center gap-2">
+                        {mobileBadges && mobileBadges(row.original)}
+                        {mobileActions && mobileActions(row.original)}
                       </div>
                     )}
                   </div>
 
                   {mobileFields && mobileFields.length > 0 && (
-                    <div className="mt-3 grid grid-cols-1 gap-2 rounded-md bg-bg/70 px-3 py-2.5">
+                    <div className="mt-3 grid grid-cols-1 gap-2 rounded-lg bg-surface-container/70 px-3 py-2">
                       {mobileFields.map((field, index) => (
-                        <div key={index} className="flex items-start justify-between gap-4">
-                          <span className="shrink-0 text-[11px] font-extrabold uppercase text-secondary">
+                        <div key={index} className="flex min-h-8 items-center justify-between gap-4">
+                          <span className="shrink-0 text-[10px] font-extrabold uppercase text-secondary">
                             {field.label}
                           </span>
-                          <div className="min-w-0 text-right text-sm font-semibold text-text">
+                          <div className="min-w-0 text-right text-xs font-semibold text-text">
                             {field.value(row.original)}
                           </div>
                         </div>
                       ))}
-                    </div>
-                  )}
-
-                  {mobileActions && (
-                    <div className="mt-3 flex items-center justify-end gap-2 border-t border-border pt-3">
-                      {mobileActions(row.original)}
                     </div>
                   )}
                 </article>

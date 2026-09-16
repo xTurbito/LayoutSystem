@@ -10,12 +10,12 @@ export default function PaginationTable({ page, pageCount, onPageChange, summary
   const safePageCount = Math.max(1, pageCount);
 
   return (
-    <nav aria-label="Paginación" className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-3 sm:px-6 py-3 sm:py-4 border-t border-border bg-bg">
-      {summary && <p className="text-xs sm:text-sm text-secondary">{summary}</p>}
-      <div className="flex items-center gap-2 flex-wrap">
+    <nav aria-label="Paginación" className="flex flex-col items-center justify-between gap-3 px-3 py-3 sm:flex-row sm:px-6 sm:py-4">
+      {summary && <p className="w-full text-center text-xs text-secondary sm:w-auto sm:text-left sm:text-sm">{summary}</p>}
+      <div className="flex w-full flex-wrap items-center justify-center gap-2 sm:w-auto sm:justify-end">
         <button
           type="button"
-          className="px-2 sm:px-3 py-1 border border-border rounded-lg hover:bg-primary hover:text-white hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-xs sm:text-sm text-secondary cursor-pointer"
+          className="min-h-10 cursor-pointer rounded-full px-4 py-2 text-xs font-bold text-secondary material-state hover:bg-primary/8 hover:text-primary active:bg-primary/12 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm material-focus"
           onClick={() => onPageChange(Math.max(0, page - 1))}
           disabled={page === 0}
         >
@@ -29,7 +29,7 @@ export default function PaginationTable({ page, pageCount, onPageChange, summary
         </span>
         <button
           type="button"
-          className="px-2 sm:px-3 py-1 border border-border rounded-lg hover:bg-primary hover:text-white hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-xs sm:text-sm text-secondary cursor-pointer"
+          className="min-h-10 cursor-pointer rounded-full px-4 py-2 text-xs font-bold text-secondary material-state hover:bg-primary/8 hover:text-primary active:bg-primary/12 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm material-focus"
           onClick={() => onPageChange(Math.min(safePageCount - 1, page + 1))}
           disabled={page >= safePageCount - 1}
         >
