@@ -5,11 +5,14 @@ import clsx from 'clsx';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 
+// Elevación (shadow-2) al hover en vez de scale: da sensación de "levantarse" sin
+// arriesgar el solape visual que un transform de escala causaría en botones de
+// acción apretados dentro de filas de tabla.
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:   'bg-primary hover:bg-primary-hover text-white shadow-sm',
-  secondary: 'bg-surface border border-border text-text hover:bg-bg shadow-sm',
-  danger:    'bg-red-600 hover:bg-red-700 text-white shadow-sm',
-  ghost:     'bg-transparent text-text hover:bg-bg',
+  primary:   'bg-primary text-on-primary shadow-[var(--shadow-1)] hover:bg-primary-hover hover:shadow-[var(--shadow-2)] active:bg-primary-hover',
+  secondary: 'border border-border bg-surface text-text shadow-[var(--shadow-1)] hover:bg-primary/8 hover:shadow-[var(--shadow-2)] active:bg-primary/12',
+  danger:    'bg-error text-surface shadow-[var(--shadow-1)] hover:opacity-90 hover:shadow-[var(--shadow-2)] active:opacity-80',
+  ghost:     'bg-transparent text-text hover:bg-primary/8 active:bg-primary/12',
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -35,11 +38,11 @@ export default function Button({
       disabled={disabled || isLoading}
       title={label ? undefined : rest['aria-label']}
       className={clsx(
-        'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold',
-        'transition duration-200 cursor-pointer',
-        'motion-safe:active:scale-[0.98] motion-reduce:transform-none disabled:active:scale-100',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
-        'disabled:opacity-60 disabled:cursor-not-allowed',
+        'inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold',
+        'material-state cursor-pointer select-none',
+        'material-focus',
+        'motion-safe:active:scale-[0.98] motion-reduce:transform-none',
+        'disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100',
         variantClasses[variant],
         fullWidth && 'w-full',
         className,

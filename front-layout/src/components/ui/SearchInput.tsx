@@ -12,7 +12,7 @@ interface SearchInputProps {
  * Input de búsqueda reutilizable, extraído de GenericTable (SRP).
  * Usa useId() para generar IDs únicos y evitar conflictos.
  */
-export default function SearchInput({ value, onChange, placeholder = 'Buscar...', className }: SearchInputProps) {
+export default function SearchInput({ value, onChange, placeholder = 'Buscar…', className }: SearchInputProps) {
   const id = useId();
 
   return (
@@ -26,7 +26,7 @@ export default function SearchInput({ value, onChange, placeholder = 'Buscar...'
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-white rounded-lg py-2.5 pl-10 pr-10 text-sm text-text placeholder:text-secondary border border-border focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary shadow-sm transition"
+        className="w-full material-control py-2.5 pl-10 pr-12 text-sm placeholder:text-secondary/75 material-state focus-visible:border-primary"
         type="text"
       />
       {value && (
@@ -34,7 +34,7 @@ export default function SearchInput({ value, onChange, placeholder = 'Buscar...'
           type="button"
           onClick={() => onChange('')}
           aria-label="Limpiar búsqueda"
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-secondary hover:text-primary bg-white w-7 h-7 flex items-center justify-center rounded-full"
+          className="absolute right-0.5 top-1/2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-secondary material-state hover:bg-primary/8 hover:text-primary active:bg-primary/12 material-focus"
         >
           <X size={14} />
         </button>

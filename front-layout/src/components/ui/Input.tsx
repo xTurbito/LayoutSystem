@@ -21,6 +21,8 @@ const inputModeByKind: Partial<Record<InputKind, InputHTMLAttributes<HTMLInputEl
   phone: 'tel',
 };
 
+const pickerInputTypes = new Set(['date', 'time', 'datetime-local', 'month', 'week', 'color', 'file']);
+
 function sanitizeValue(value: string, kind: InputKind) {
   switch (kind) {
     case 'integer':
@@ -56,6 +58,7 @@ export default function Input({
   inputKind = 'text',
   onChange,
   inputMode,
+  autoComplete,
   ...rest
 }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -63,10 +66,11 @@ export default function Input({
   const shouldSanitize = inputKind !== 'text';
   const resolvedType = isPassword ? (showPassword ? 'text' : 'password') : shouldSanitize ? 'text' : type;
   const resolvedInputMode = inputMode ?? inputModeByKind[inputKind];
+  const cursorClasses = pickerInputTypes.has(resolvedType) ? 'cursor-pointer' : '';
 
   const borderClasses = errorMessage
-    ? 'border-red-500 focus:ring-2 focus:ring-red-500/20 focus:border-red-500'
-    : 'border-border focus:ring-2 focus:ring-primary/25 focus:border-primary';
+    ? 'border-error focus-visible:border-error focus-visible:shadow-[0_0_0_3px_rgba(186,26,26,0.22)]'
+    : 'border-border focus-visible:border-primary';
 
   const pl = leadingIcon ? 'pl-10' : 'pl-3';
   const pr = isPassword ? 'pr-10' : 'pr-3';
@@ -94,17 +98,17 @@ export default function Input({
           inputMode={resolvedInputMode}
           aria-invalid={errorMessage ? true : undefined}
           aria-describedby={errorMessage && name ? `${name}-error` : undefined}
-          className={`block w-full rounded-lg border bg-white/95 py-2.5 ${pl} ${pr} text-text placeholder:text-secondary transition-colors duration-150 outline-none shadow-sm ${borderClasses} ${className}`}
+          className={`block w-full material-control py-2.5 ${pl} ${pr} ${cursorClasses} placeholder:text-secondary/75 material-state disabled:cursor-not-allowed ${borderClasses} ${className}`}
           onChange={handleChange}
+          autoComplete={autoComplete}
           {...rest}
-          {...(isPassword && { autoComplete: 'current-password' })}
         />
         {isPassword && (
           <button
             type="button"
-            tabIndex={-1}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors"
+            className="absolute right-0.5 top-1/2 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-secondary material-state hover:bg-primary/8 hover:text-primary active:bg-primary/12 material-focus"
             onClick={() => setShowPassword(v => !v)}
+            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
           >
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
