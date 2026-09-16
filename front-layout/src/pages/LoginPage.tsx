@@ -30,15 +30,15 @@ export function LoginPage() {
 
         {/* Brand */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-primary flex items-center justify-center shadow-lg">
-            <LayoutGrid className="w-6 h-6 text-white" />
+          <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-primary flex items-center justify-center shadow-[0_0_0_8px_rgba(63,73,246,0.16),0_18px_38px_rgba(63,73,246,0.24)]">
+            <LayoutGrid className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-text tracking-tight">LayoutSystem</h1>
-          <p className="text-secondary text-sm mt-0.5">Panel de administración</p>
+          <h1 className="text-2xl font-black text-text tracking-tight">LayoutSystem</h1>
+          <p className="text-accent text-sm mt-0.5">Panel de administración</p>
         </div>
 
         {/* Card */}
-        <div className="bg-surface rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-surface rounded-2xl shadow-[0_24px_70px_rgba(63,73,246,0.14)] overflow-hidden border border-border">
           <div className="px-8 pt-8 pb-2">
             <h2 className="text-xl font-bold text-text">Iniciar sesión</h2>
             <p className="text-secondary text-sm mt-0.5">Ingresa tus credenciales para continuar</p>
@@ -53,6 +53,8 @@ export function LoginPage() {
               label="Correo electrónico"
               type="email"
               placeholder="correo@empresa.com"
+              autoComplete="email"
+              spellCheck={false}
               leadingIcon={<User className="w-4 h-4" />}
               errorMessage={errors.email?.message}
               {...register('email')}
@@ -62,6 +64,8 @@ export function LoginPage() {
               label="Contraseña"
               type="password"
               placeholder="••••••••"
+              autoComplete="current-password"
+              spellCheck={false}
               leadingIcon={<Lock className="w-4 h-4" />}
               errorMessage={errors.password?.message}
               {...register('password')}
@@ -69,15 +73,15 @@ export function LoginPage() {
 
             <Button
               type="submit"
-              label={isLoading ? 'Ingresando...' : 'Iniciar sesión'}
+              label={isLoading ? 'Ingresando…' : 'Iniciar sesión'}
               fullWidth
               disabled={isLoading}
               className="mt-1 py-2.5"
             />
           </form>
 
-          <div className="px-8 py-3 bg-bg border-t border-border flex items-center justify-center gap-1.5 text-xs text-secondary">
-            <ShieldCheck className="w-3.5 h-3.5 text-secondary" />
+          <div className="px-8 py-3 bg-primary/10 border-t border-primary/20 flex items-center justify-center gap-1.5 text-xs text-secondary">
+            <ShieldCheck className="w-3.5 h-3.5 text-primary" />
             Conexión segura y cifrada
           </div>
         </div>

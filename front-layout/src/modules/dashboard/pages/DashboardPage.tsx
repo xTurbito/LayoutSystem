@@ -46,7 +46,7 @@ export function DashboardPage() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="bg-surface border border-border rounded-xl p-5 flex flex-col gap-1"
+            className="bg-surface border border-border rounded-[var(--radius-card)] p-5 flex flex-col gap-1"
           >
             <span className="text-xs font-medium text-secondary uppercase tracking-wide">{stat.label}</span>
             <span className="text-3xl font-black text-text">{stat.value}</span>
@@ -57,7 +57,7 @@ export function DashboardPage() {
 
       {/* Módulos con acceso */}
       {activeModules.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-[var(--radius-card)] overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-text">Módulos disponibles</h3>
           </div>

@@ -3,9 +3,11 @@ import { toast } from "sonner";
 import { authApi } from "../../../api/auth";
 import { getApiError } from "../../../api/errors";
 import type { ChangePasswordDto, UpdateProfileDto } from "../type";
+import { useAuth } from "../../../context/AuthContext";
 
 export function useProfileMutation() {
     const queryClient = useQueryClient();
+    const { logout } = useAuth();
 
     const updateInfo = useMutation({
         mutationFn: (data: UpdateProfileDto) => authApi.updateProfile(data),
@@ -23,6 +25,7 @@ export function useProfileMutation() {
         mutationFn: (data: ChangePasswordDto) => authApi.changePassword(data),
         onSuccess: () => {
             toast.success('Contraseña actualizada. Inicia sesión de nuevo.');
+            logout();
         },
         onError: (error) => {
             toast.error(getApiError(error, 'Error al actualizar la contraseña'));
