@@ -38,7 +38,7 @@ export default function Button({
       disabled={disabled || isLoading}
       title={label ? undefined : rest['aria-label']}
       className={clsx(
-        'inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold',
+        'inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold',
         'material-state cursor-pointer select-none',
         'material-focus',
         'motion-safe:active:scale-[0.98] motion-reduce:transform-none',
