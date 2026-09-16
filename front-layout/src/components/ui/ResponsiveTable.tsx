@@ -40,11 +40,11 @@ export default function ResponsiveTable<T>({
   );
 
   return (
-    <div className="rounded-md border border-border bg-white overflow-hidden">
+    <div className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-surface shadow-[var(--shadow-1)]">
       <div className="hidden overflow-x-auto md:block">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-[#f0efff] border-b border-border">
+            <tr className="border-b border-border bg-surface-container">
               {columns.map((column) => (
                 <th
                   key={column.id}
@@ -60,7 +60,7 @@ export default function ResponsiveTable<T>({
           </thead>
           <tbody className="divide-y divide-border">
             {data.map((item) => (
-              <tr key={getRowKey(item)} className="transition-colors hover:bg-primary/5">
+              <tr key={getRowKey(item)} className="hover:bg-primary/5">
                 {columns.map((column) => (
                   <td key={column.id} className={clsx('px-4 py-3.5 align-top', column.className)}>
                     {column.cell(item)}
@@ -82,7 +82,7 @@ export default function ResponsiveTable<T>({
             )}
 
             {metaColumns.length > 0 && (
-              <div className="grid grid-cols-1 gap-2 rounded-md bg-bg/70 px-3 py-2.5">
+              <div className="grid grid-cols-1 gap-2 rounded-xl bg-surface-container/70 px-3 py-2.5">
                 {metaColumns.map((column) => (
                   <div key={column.id} className="flex items-start justify-between gap-4">
                     <span className="shrink-0 text-[11px] font-extrabold uppercase text-secondary">
