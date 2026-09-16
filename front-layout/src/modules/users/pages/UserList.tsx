@@ -3,7 +3,9 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Pencil, Plus } from 'lucide-react';
 import clsx from 'clsx';
 import GenericTable from '../../../components/ui/Table';
-import GenericSelect from '../../../components/ui/Select';
+import SelectField from '../../../components/ui/SelectField';
+import CollapsibleSearchInput from '../../../components/ui/CollapsibleSearchInput';
+import FilterPopover from '../../../components/ui/FilterPopover';
 import StatusBadge from '../../../components/ui/StatusBadge';
 import { useModulePermissions } from '../../../hooks/useModulePermissions';
 import { useUsers } from '../hooks/useUsers';
@@ -12,6 +14,8 @@ import DlgUser from '../components/DlgUser';
 import Button from '../../../components/ui/Button';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
+const STATUS_OPTIONS = [{ value: '', label: 'Estado: Todos' }, { value: 'true', label: 'Activo' }, { value: 'false', label: 'Inactivo' }];
+const ICON_BUTTON_CLASS = 'h-10 w-10 rounded-full p-0';
 
 const roleBadge: Record<string, string> = {
   ADMIN: 'bg-primary/10 text-primary',
@@ -70,7 +74,7 @@ function getColumns(canEdit: boolean, onEdit: (user: UserItem) => void): ColumnD
               icon={Pencil}
               variant="ghost"
               aria-label="Editar usuario"
-              className="p-1.5 rounded"
+              className={ICON_BUTTON_CLASS}
               onClick={() => onEdit(row.original)}
             />
           )}
@@ -86,6 +90,13 @@ export default function UserList() {
 
   const [showDlg, setShowDlg] = useState(false);
   const [editUser, setEditUser] = useState<UserItem | undefined>(undefined);
+  const [search, setSearch] = useState('');
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    users.onSearchChange(value);
+    users.onPageChange(0);
+  };
 
   function openCreate() {
     setEditUser(undefined);
@@ -107,12 +118,44 @@ export default function UserList() {
 
       <DlgUser open={showDlg} onClose={() => setShowDlg(false)} user={editUser} />
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-6">
+      <div className="mb-6 flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-text mb-1">Gestión de Usuarios</h1>
-          <p className="text-secondary text-base font-normal">
-            Visualiza y administra a todos los usuarios registrados en el sistema.
-          </p>
+          <h1 className="text-2xl font-bold text-text">Usuarios</h1>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <CollapsibleSearchInput
+            value={search}
+            onChange={handleSearch}
+            placeholder="Buscar usuario..."
+            className="sm:w-56"
+          />
+          <FilterPopover activeCount={users.statusFilter !== '' ? 1 : 0}>
+            <SelectField
+              aria-label="Filtrar usuarios por estado"
+              options={STATUS_OPTIONS}
+              value={users.statusFilter}
+              onChange={value => users.onStatusChange(value as '' | 'true' | 'false')}
+              name="statusFilter"
+            />
+            <SelectField
+              aria-label="Usuarios por página"
+              options={PAGE_SIZE_OPTIONS.map(size => ({ value: String(size), label: `${size} por página` }))}
+              value={String(users.pageSize)}
+              onChange={value => users.onPageSizeChange(Number(value))}
+              name="pageSize"
+            />
+          </FilterPopover>
+
+          {canCreate && (
+            <Button
+              type="button"
+              label="Nuevo"
+              icon={Plus}
+              variant="primary"
+              onClick={openCreate}
+            />
+          )}
         </div>
       </div>
 
@@ -124,8 +167,7 @@ export default function UserList() {
         page={users.page}
         pageCount={users.pageCount}
         onPageChange={users.onPageChange}
-        onSearchChange={users.onSearchChange}
-        searchPlaceholder="Buscar..."
+        showSearch={false}
         summary={`${users.totalCount} usuarios en total`}
         mobileTitle={(user) => user.name}
         mobileSubtitle={(user) => user.email}
@@ -149,45 +191,11 @@ export default function UserList() {
                   icon={Pencil}
                   variant="ghost"
                   aria-label="Editar usuario"
-                  className="p-2 rounded"
+                  className={ICON_BUTTON_CLASS}
                   onClick={() => openEdit(user)}
                 />
               )
             : undefined
-        }
-        filters={
-          <>
-            <GenericSelect
-              value={users.statusFilter}
-              onChange={e => users.onStatusChange(e.target.value as '' | 'true' | 'false')}
-              name="statusFilter"
-            >
-              <option value="">Estado: Todos</option>
-              <option value="true">Activo</option>
-              <option value="false">Inactivo</option>
-            </GenericSelect>
-            <GenericSelect
-              value={users.pageSize}
-              onChange={e => users.onPageSizeChange(Number(e.target.value))}
-              name="pageSize"
-            >
-              {PAGE_SIZE_OPTIONS.map(size => (
-                <option key={size} value={size}>{size} por página</option>
-              ))}
-            </GenericSelect>
-          </>
-        }
-        actions={
-          canCreate && (
-            <Button
-              type="button"
-              label="Añadir Nuevo Usuario"
-              icon={Plus}
-              variant="primary"
-              fullWidth
-              onClick={openCreate}
-            />
-          )
         }
       />
 
