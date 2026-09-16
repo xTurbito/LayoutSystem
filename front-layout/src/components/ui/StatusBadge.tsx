@@ -7,8 +7,7 @@ interface StatusBadgeProps {
 }
 
 /**
- * Badge de estado activo/inactivo con contraste AA.
- * Reemplaza el patrón `bg-green-500 text-white` (≈2.3:1, falla 4.5:1).
+ * Badge de estado activo/inactivo alineado con la paleta del panel.
  */
 export default function StatusBadge({
   active,
@@ -18,10 +17,10 @@ export default function StatusBadge({
   return (
     <span
       className={clsx(
-        'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold',
+        'inline-flex min-h-8 items-center rounded-full border px-3 py-1 text-xs font-bold',
         active
-          ? 'bg-green-100 text-green-800'
-          : 'bg-border text-secondary',
+          ? 'border-success/20 bg-success-container text-success'
+          : 'border-error/20 bg-error-container text-error',
       )}
     >
       {active ? activeLabel : inactiveLabel}
