@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Shield } from 'lucide-react';
+import { X } from 'lucide-react';
 import ModalShell from '../../../components/ui/ModalShell';
 import Input from '../../../components/ui/Input';
 import Button from '../../../components/ui/Button';
@@ -25,13 +25,10 @@ export default function DlgRole({ open, onClose, role }: DlgRoleProps) {
     defaultValues: { name: '', description: '' }, resolver: zodResolver(roleSchema)
   });
 
-   useEffect(() => {
-    if (open) {
-      reset({ name: role?.name ?? '', description: role?.description ?? '' });
-    } else {
-      reset({ name: '', description: '' });
-    }
-  }, [open, role?.id, reset]);
+  useEffect(() => {
+    if (!open) return;
+    reset({ name: role?.name ?? '', description: role?.description ?? '' });
+  }, [open, role?.description, role?.id, role?.name, reset]);
 
   const onSubmit = (data: CreateRoleDTO) => {
     if (isEdit) {
@@ -45,9 +42,8 @@ export default function DlgRole({ open, onClose, role }: DlgRoleProps) {
     <ModalShell
       open={open}
       onClose={onClose}
-      title={isEdit ? 'Editar Rol' : 'Nuevo Rol'}
-      icon={<Shield className="w-8 h-8 text-indigo-600 bg-indigo-100 rounded-lg p-1.5" />}
-      description={isEdit ? 'Modifica el nombre o descripción del rol.' : 'Ingresa el nombre del nuevo rol.'}
+      title={isEdit ? 'Editar' : 'Nuevo'}
+      hideDivider
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className="flex flex-col gap-3">
@@ -61,18 +57,26 @@ export default function DlgRole({ open, onClose, role }: DlgRoleProps) {
           />
           <Input
             label="Descripción"
-            placeholder="Ej: Escribe algo..."
+            placeholder="Ej: Escribe algo…"
             errorMessage={errors.description?.message}
             maxLength={200}
             {...register('description')}
           />
-          <Button
-            type="submit"
-            label={isEdit ? 'Guardar cambios' : 'Crear Rol'}
-            fullWidth
-            isLoading={mutation.isPending}
-            className="mt-1"
-          />
+          <div className="mt-1 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Cancelar"
+              className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary-container text-primary material-state hover:bg-primary/20 active:bg-primary/25 material-focus"
+            >
+              <X size={18} />
+            </button>
+            <Button
+              type="submit"
+              label={isEdit ? 'Guardar cambios' : 'Crear Rol'}
+              isLoading={mutation.isPending}
+            />
+          </div>
         </div>
       </form>
     </ModalShell>

@@ -31,6 +31,7 @@ export function useRoleActivities(roleId: string) {
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   // moduleKey → bitflag actual
   const [permissions, setPermissions] = useState<Record<string, number>>({});
+  const [savingPermission, setSavingPermission] = useState<string | null>(null);
   // Espejo síncrono de permissions: evita closures stale en clicks rápidos consecutivos
   const permissionsRef = useRef<Record<string, number>>({});
 
@@ -47,6 +48,7 @@ export function useRoleActivities(roleId: string) {
       for (const mod of data.modules) {
         perms[mod.key] = mod.actions;
       }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPermissions(perms);
       permissionsRef.current = perms;
       setExpandedModules(new Set(data.modules.map(m => m.id)));
@@ -94,6 +96,7 @@ export function useRoleActivities(roleId: string) {
         permissionsRef.current = perms;
       }
     },
+    onSettled: () => setSavingPermission(null),
   });
 
   const togglePermission = useCallback((
@@ -110,6 +113,7 @@ export function useRoleActivities(roleId: string) {
     const next = { ...permissionsRef.current, [moduleKey]: newActions };
     permissionsRef.current = next;
     setPermissions(next);
+    setSavingPermission(`${moduleId}:${activityKey}`);
     mutation.mutate({ moduleId, actions: newActions });
   }, [mutation]);
 
@@ -119,6 +123,7 @@ export function useRoleActivities(roleId: string) {
     expandedModules,
     isLoading,
     isSaving: mutation.isPending,
+    savingPermission,
     toggleModule,
     expandAll,
     collapseAll,
