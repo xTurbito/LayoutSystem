@@ -1,13 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { Menu } from 'lucide-react';
 import clsx from 'clsx';
 import { Sidebar } from './Sidebar';
-import { Header } from './Header';
 
 export function AppLayout() {
   const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1024);
-  const toggle = () => setCollapsed((c) => !c);
   const location = useLocation();
+  const toggle = () => setCollapsed((c) => !c);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (window.innerWidth < 1024) setCollapsed(true);
+  }, [location.pathname]);
 
   return (
     <div className={clsx('app-layout', collapsed && 'app-layout--collapsed')}>
@@ -23,21 +28,32 @@ export function AppLayout() {
       {/* Backdrop — solo móvil cuando el sidebar está abierto */}
       {!collapsed && (
         <div
-          className="fixed inset-0 bg-black/20 z-20 lg:hidden"
+          className="fixed inset-0 z-20 bg-[var(--scrim)] lg:hidden"
           onClick={toggle}
         />
       )}
 
       <Sidebar collapsed={collapsed} onToggle={toggle} />
 
-      <div className="app-layout__main">
-        <Header onMenuClick={toggle} />
-        <main id="main-content" className="app-layout__content">
-          <div key={location.pathname} className="animate-page-in">
-            <Outlet />
-          </div>
-        </main>
-      </div>
+      {/* Hamburger flotante — solo móvil, cuando el sidebar está cerrado */}
+      {collapsed && (
+        <button
+          className="fixed top-3 left-3 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-surface text-secondary shadow-[var(--shadow-1)] material-state hover:bg-primary/8 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 focus-visible:ring-offset-2 focus-visible:ring-offset-bg lg:hidden"
+          onClick={toggle}
+          aria-label="Abrir menú"
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
+      <main id="main-content" className="app-layout__content">
+        {/* h-full: sin esto ninguna pagina puede usar h-full/flex-1 de forma
+            confiable (el padre de arriba, app-layout__content, si tiene altura
+            fija via h-screen, pero esta caja intermedia quedaba en auto) */}
+        <div key={location.pathname} className="h-full animate-page-in">
+          <Outlet />
+        </div>
+      </main>
 
     </div>
   );
