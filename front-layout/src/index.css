@@ -3,40 +3,112 @@
 
 /* ── Theme tokens ───────────────────────────────────────────── */
 @theme {
-  --color-bg:            #f8fafc;
-  --color-surface:       #ffffff;
-  --color-border:        #e2e8f0;
-  --color-text:          #0f172a;
-  --color-secondary:     #64748b;
-  --color-primary:       #1e293b;
-  --color-primary-hover: #0f172a;
-  --color-accent:        #2563eb;
-  --color-accent-hover:  #1d4ed8;
-  --color-error:         #e53e3e;
-  --color-success:       #38a169;
-  --text-xs:             0.8125rem;
-  --text-sm:             0.9375rem;
-  --text-base:           1.0625rem;
-  --text-lg:             1.1875rem;
-  --text-xl:             1.375rem;
-  --text-2xl:            1.625rem;
+  --color-bg:                 #f8fafc;
+  --color-surface:            #ffffff;
+  --color-surface-container:  #eef2f7;
+  --color-surface-high:       #e2e8f0;
+  --color-border:             #e2e8f0;
+  --color-text:               #0f172a;
+  --color-secondary:          #64748b;
+  --color-primary:            #1e293b;
+  --color-primary-hover:      #0f172a;
+  --color-primary-container:  #dbe3ea;
+  --color-on-primary:         #ffffff;
+  --color-accent:             #2563eb;
+  --color-accent-hover:       #1d4ed8;
+  --color-error:              #e53e3e;
+  --color-error-container:    #fde2e2;
+  --color-success:            #38a169;
+  --color-success-container:  #dcf5e3;
+  --color-info:               #0ea5e9;
+  --color-info-container:     #e0f2fe;
+  --color-warning:            #b45309;
+  --color-warning-container:  #fef3c7;
+  --color-navy:               #1e293b;
+  --color-navy-deep:          #0f172a;
+  --text-xs:                  0.8125rem;
+  --text-sm:                  0.9375rem;
+  --text-base:                1.0625rem;
+  --text-lg:                  1.1875rem;
+  --text-xl:                  1.375rem;
+  --text-2xl:                 1.625rem;
 }
 
 /* ── Dark mode token overrides ──────────────────────────────── */
 .dark {
-  --color-bg:        #0d1117;
-  --color-surface:   #161b22;
-  --color-border:    #30363d;
-  --color-text:      #e6edf3;
-  --color-secondary: #8b949e;
+  --color-bg:                #0d1117;
+  --color-surface:           #161b22;
+  --color-surface-container: #1c2128;
+  --color-surface-high:      #262c35;
+  --color-border:            #30363d;
+  --color-text:              #e6edf3;
+  --color-secondary:         #8b949e;
+  --color-primary-container: #263241;
+  --color-error-container:   #45201f;
+  --color-success-container: #163826;
+  --color-info-container:    #123247;
+  --color-warning-container: #3f2f10;
 }
+
+/* ── Paleta de acento (Apariencia) ──────────────────────────────
+   "gris" es el default y ya son los valores del @theme de arriba,
+   por eso no tiene bloque propio. */
+:root[data-palette="negro"]        { --color-primary: #171717; --color-primary-hover: #000000; --color-primary-container: #e5e5e5; --color-on-primary: #ffffff; }
+:root[data-palette="negro"].dark   { --color-primary: #fafafa; --color-primary-hover: #d4d4d4; --color-primary-container: #262626; --color-on-primary: #0a0a0a; }
+
+:root[data-palette="rojo"]         { --color-primary: #dc2626; --color-primary-hover: #b91c1c; --color-primary-container: #fee2e2; --color-on-primary: #ffffff; }
+:root[data-palette="rojo"].dark    { --color-primary: #f87171; --color-primary-hover: #ef4444; --color-primary-container: #450a0a; --color-on-primary: #1a0505; }
+
+:root[data-palette="naranja"]      { --color-primary: #ea580c; --color-primary-hover: #c2410c; --color-primary-container: #ffedd5; --color-on-primary: #ffffff; }
+:root[data-palette="naranja"].dark { --color-primary: #fb923c; --color-primary-hover: #f97316; --color-primary-container: #431407; --color-on-primary: #1a0a03; }
+
+:root[data-palette="verde"]        { --color-primary: #16a34a; --color-primary-hover: #15803d; --color-primary-container: #dcfce7; --color-on-primary: #ffffff; }
+:root[data-palette="verde"].dark   { --color-primary: #4ade80; --color-primary-hover: #22c55e; --color-primary-container: #052e16; --color-on-primary: #04140a; }
+
+:root[data-palette="azul"]         { --color-primary: #2563eb; --color-primary-hover: #1d4ed8; --color-primary-container: #dbeafe; --color-on-primary: #ffffff; }
+:root[data-palette="azul"].dark    { --color-primary: #60a5fa; --color-primary-hover: #3b82f6; --color-primary-container: #172554; --color-on-primary: #0a1229; }
+
+:root[data-palette="indigo"]       { --color-primary: #4f46e5; --color-primary-hover: #4338ca; --color-primary-container: #e0e7ff; --color-on-primary: #ffffff; }
+:root[data-palette="indigo"].dark  { --color-primary: #818cf8; --color-primary-hover: #6366f1; --color-primary-container: #1e1b4b; --color-on-primary: #0e0c22; }
+
+:root[data-palette="morado"]       { --color-primary: #7c3aed; --color-primary-hover: #6d28d9; --color-primary-container: #ede9fe; --color-on-primary: #ffffff; }
+:root[data-palette="morado"].dark  { --color-primary: #a78bfa; --color-primary-hover: #8b5cf6; --color-primary-container: #2e1065; --color-on-primary: #150733; }
+
+:root[data-palette="magenta"]       { --color-primary: #c026d3; --color-primary-hover: #a21caf; --color-primary-container: #fae8ff; --color-on-primary: #ffffff; }
+:root[data-palette="magenta"].dark  { --color-primary: #e879f9; --color-primary-hover: #d946ef; --color-primary-container: #4a044e; --color-on-primary: #1f0221; }
+
+:root[data-palette="rosa"]         { --color-primary: #db2777; --color-primary-hover: #be185d; --color-primary-container: #fce7f3; --color-on-primary: #ffffff; }
+:root[data-palette="rosa"].dark    { --color-primary: #f472b6; --color-primary-hover: #ec4899; --color-primary-container: #500724; --color-on-primary: #22030f; }
 
 /* ── Layout dimensions ──────────────────────────────────────── */
 :root {
+  color-scheme: light;
   --sidebar-width:           220px;
   --sidebar-collapsed-width: 56px;
   --header-height:           56px;
-  --transition:              0.2s ease;
+  --transition:              180ms cubic-bezier(0.2, 0, 0, 1);
+  --motion-standard:         cubic-bezier(0.2, 0, 0, 1);
+  --surface-container:       var(--color-surface-container);
+  --surface-container-high:  var(--color-surface-high);
+  --state-primary-hover:     rgba(30, 41, 59, 0.08);
+  --state-primary-pressed:   rgba(30, 41, 59, 0.14);
+  --state-error-hover:       rgba(229, 62, 62, 0.08);
+  --state-error-pressed:     rgba(229, 62, 62, 0.14);
+  --focus-ring:              0 0 0 3px rgba(30, 41, 59, 0.24);
+  --radius-control:          0.75rem;
+  --radius-sheet:            1rem;
+  --radius-card:             1.5rem;
+  --scrim:                   rgba(15, 23, 42, 0.44);
+  --shadow-1:                0 1px 2px rgba(15, 23, 42, 0.08);
+  --shadow-2:                0 8px 22px rgba(15, 23, 42, 0.10);
+  --shadow-3:                0 18px 48px rgba(15, 23, 42, 0.14);
+}
+
+.dark {
+  color-scheme: dark;
+  /* El primary de este theme base no cambia en dark mode (ver .dark arriba),
+     así que el focus ring usa el accent (azul), visible en fondo oscuro. */
+  --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.45);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -44,58 +116,77 @@
   body {
     @apply bg-bg text-text text-base leading-normal antialiased;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    min-height: 100dvh;
+    background:
+      linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg) 42%, var(--color-surface-container) 100%);
+    text-rendering: optimizeLegibility;
   }
-  button { background: none; font: inherit; }
-  input  { font: inherit; }
+  button { background: none; font: inherit; touch-action: manipulation; }
+  input, select, textarea { font: inherit; color-scheme: inherit; }
+  select, option { background-color: var(--color-surface); color: var(--color-text); }
+  ::selection { background: color-mix(in srgb, var(--color-primary) 18%, transparent); }
+  :where(button, a, input, select, textarea, [role="button"]) {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.04), transparent 28rem),
+    linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg) 42%, var(--color-surface-container) 100%);
+}
+
+.dark ::selection { background: color-mix(in srgb, var(--color-primary) 28%, transparent); }
 
 
 /* ── Modal keyframes ────────────────────────────────────────── */
 @keyframes modal-backdrop-in  { from { opacity: 0 } to { opacity: 1 } }
 @keyframes modal-backdrop-out { from { opacity: 1 } to { opacity: 0 } }
 @keyframes modal-in {
-  from { opacity: 0; transform: scale(0.97) translateY(10px) }
+  from { opacity: 0; transform: scale(0.98) translateY(8px) }
   to   { opacity: 1; transform: scale(1)    translateY(0)    }
 }
 @keyframes modal-out {
   from { opacity: 1; transform: scale(1)    translateY(0)   }
-  to   { opacity: 0; transform: scale(0.97) translateY(4px) }
+  to   { opacity: 0; transform: scale(0.98) translateY(4px) }
 }
+@keyframes drawer-in  { from { transform: translateX(100%) } to { transform: translateX(0) } }
+@keyframes drawer-out { from { transform: translateX(0) } to { transform: translateX(100%) } }
+@keyframes sheet-in   { from { transform: translateY(100%) } to { transform: translateY(0) } }
+@keyframes sheet-out  { from { transform: translateY(0) } to { transform: translateY(100%) } }
 @media (prefers-reduced-motion: reduce) {
   @keyframes modal-backdrop-in  { to { opacity: 1 } }
   @keyframes modal-backdrop-out { to { opacity: 0 } }
   @keyframes modal-in  { to { opacity: 1; transform: none } }
   @keyframes modal-out { to { opacity: 0; transform: none } }
-}
-
-/* ── Drawer keyframes ───────────────────────────────────────── */
-@keyframes drawer-in  { from { transform: translateX(100%) } to { transform: translateX(0) } }
-@keyframes drawer-out { from { transform: translateX(0) }    to { transform: translateX(100%) } }
-@media (prefers-reduced-motion: reduce) {
-  @keyframes drawer-in  { to { transform: translateX(0) } }
-  @keyframes drawer-out { to { transform: translateX(100%) } }
+  @keyframes drawer-in  { to { transform: none } }
+  @keyframes drawer-out { to { opacity: 0 } }
+  @keyframes sheet-in   { to { transform: none } }
+  @keyframes sheet-out  { to { opacity: 0 } }
 }
 
 /* ── UX keyframes (solo transform/opacity = GPU, sin reflow) ─── */
-@keyframes stagger-in { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
-@keyframes page-in    { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+@keyframes stagger-in { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+@keyframes page-in    { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 @keyframes shimmer    { from { transform: translateX(-100%) } to { transform: translateX(150%) } }
 
 @layer components {
   /* Entrada escalonada de filas/cards. Delay por elemento vía style inline --row-i. */
   .animate-stagger-in {
-    animation: stagger-in 360ms cubic-bezier(0.2, 0, 0, 1) both;
-    animation-delay: calc(var(--row-i, 0) * 28ms);
+    animation: stagger-in 400ms var(--motion-standard) both;
+    animation-delay: calc(var(--row-i, 0) * 32ms);
   }
+
   /* Transición de página al cambiar de ruta. */
   .animate-page-in {
-    animation: page-in 260ms cubic-bezier(0.2, 0, 0, 1) both;
+    animation: page-in 320ms var(--motion-standard) both;
   }
-  /* Skeleton con shimmer (barrido GPU). */
+
+  /* Skeleton con shimmer (barrido GPU). Reemplaza el pulse plano. */
   .skeleton-box {
     position: relative;
     overflow: hidden;
-    background: var(--color-surface-high, var(--color-border));
+    background: var(--color-surface-high);
   }
   .skeleton-box::after {
     content: "";
@@ -122,9 +213,51 @@
 @layer components {
   /* Mobile: sidebar es overlay, main ocupa todo */
   .app-layout       { @apply h-screen overflow-hidden; }
-  .app-layout__main { display: grid; grid-template-rows: var(--header-height) 1fr; @apply overflow-hidden h-screen; }
-  /* contain: aísla el reflow interno durante la animación del sidebar = sin lag. */
-  .app-layout__content { @apply overflow-y-auto p-4 lg:p-6; contain: layout; }
+  .app-layout__content {
+    /* pt-16 en movil deja espacio al hamburger flotante (fixed top-3 left-3,
+       ver AppLayout.tsx) para que no tape botones "Volver" u otros controles
+       que viven pegados a la esquina superior izquierda del contenido. */
+    @apply h-screen overflow-y-auto p-4 pt-16 lg:p-6;
+    background: transparent;
+    scroll-padding: 1rem;
+    /* Aísla el reflow interno (tablas/paneles) durante la animación del sidebar
+       → el recálculo no se propaga a toda la página = animación fluida sin lag. */
+    contain: layout;
+  }
+
+  .material-surface {
+    @apply border border-border bg-surface rounded-xl;
+    box-shadow: var(--shadow-1);
+  }
+
+  .material-focus {
+    @apply focus-visible:outline-none;
+  }
+
+  .material-focus:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+
+  .material-state {
+    transition:
+      opacity 160ms var(--motion-standard),
+      transform 180ms var(--motion-standard),
+      box-shadow 180ms var(--motion-standard);
+    will-change: transform;
+  }
+
+  .material-control {
+    @apply min-h-10 rounded-xl border border-border bg-surface text-text shadow-[var(--shadow-1)] outline-none;
+  }
+
+  input[type="date"].material-control {
+    min-width: 0;
+  }
+
+  .material-control:focus-visible {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+  }
 
   /* Desktop: sidebar entra al grid */
   @media (min-width: 1024px) {
@@ -134,6 +267,100 @@
       transition: grid-template-columns 220ms cubic-bezier(0.2, 0, 0, 1);
     }
     .app-layout--collapsed { grid-template-columns: var(--sidebar-collapsed-width) 1fr; }
-    .app-layout__main      { @apply h-auto; }
+  }
+}
+
+.date-picker-popover {
+  position: fixed;
+  z-index: 1000;
+  width: min(320px, calc(100vw - 16px));
+  max-height: calc(100dvh - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sheet);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-2);
+}
+
+.date-picker {
+  --rdp-accent-color: var(--color-primary);
+  --rdp-accent-background-color: var(--color-primary-container);
+  --rdp-day-width: 40px;
+  --rdp-day-height: 38px;
+  --rdp-day_button-width: 34px;
+  --rdp-day_button-height: 34px;
+  --rdp-nav_button-width: 36px;
+  --rdp-nav_button-height: 36px;
+  --rdp-nav-height: 40px;
+  --rdp-weekday-padding: 5px 0;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.date-picker .rdp-month,
+.date-picker .rdp-month_grid { width: 100%; }
+.date-picker .rdp-month_caption { align-items: center; font-size: 0.9375rem; }
+.date-picker .rdp-caption_label { padding-inline: 6px; }
+.date-picker .rdp-dropdowns { margin-inline: auto; }
+.date-picker .rdp-dropdown_root {
+  min-height: 34px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-container);
+  cursor: pointer;
+}
+.date-picker .rdp-dropdown_root .rdp-caption_label { gap: 3px; }
+.date-picker .rdp-button_previous,
+.date-picker .rdp-button_next,
+.date-picker .rdp-day_button {
+  border-radius: 9px;
+  color: var(--color-text);
+}
+.date-picker .rdp-button_previous:hover,
+.date-picker .rdp-button_next:hover,
+.date-picker .rdp-day_button:hover:not(:disabled) { background: var(--state-primary-hover); }
+.date-picker .rdp-button_previous:focus-visible,
+.date-picker .rdp-button_next:focus-visible,
+.date-picker .rdp-day_button:focus-visible,
+.date-picker .rdp-dropdown:focus-visible ~ .rdp-caption_label {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.date-picker .rdp-weekday { color: var(--color-secondary); font-size: 0.75rem; }
+.date-picker .rdp-outside { opacity: 0.42; }
+.date-picker .rdp-disabled { color: var(--color-secondary); opacity: 0.38; }
+.date-picker .rdp-today:not(.rdp-selected) .rdp-day_button {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.date-picker .rdp-selected .rdp-day_button {
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 0.875rem;
+}
+.date-picker-clear {
+  display: block;
+  min-height: 36px;
+  margin: 8px auto 0;
+  padding-inline: 12px;
+  border-radius: 999px;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.date-picker-clear:hover { background: var(--state-primary-hover); }
+
+@media (prefers-reduced-motion: reduce) {
+  @layer components {
+    .material-state {
+      transition-duration: 1ms;
+      will-change: auto;
+    }
   }
 }
