@@ -69,7 +69,7 @@ export default function Input({
   const cursorClasses = pickerInputTypes.has(resolvedType) ? 'cursor-pointer' : '';
 
   const borderClasses = errorMessage
-    ? 'border-error focus-visible:border-error focus-visible:shadow-[0_0_0_3px_rgba(186,26,26,0.22)]'
+    ? 'border-error focus-visible:border-error focus-visible:shadow-[var(--focus-ring-error)]'
     : 'border-border focus-visible:border-primary';
 
   const pl = leadingIcon ? 'pl-10' : 'pl-3';

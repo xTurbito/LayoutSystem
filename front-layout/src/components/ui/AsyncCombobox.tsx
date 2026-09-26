@@ -30,7 +30,7 @@ const prefersReducedMotion =
 const customStyles: StylesConfig<ComboboxOption, false> = {
   control: (base, state) => ({
     ...base,
-    backgroundColor: 'var(--color-surface, #ffffff)',
+    backgroundColor: 'var(--color-surface)',
     borderColor:     state.isFocused ? 'var(--color-primary)' : 'var(--color-border)',
     borderRadius:    'var(--radius-control, 0.75rem)',
     boxShadow:       state.isFocused ? 'var(--focus-ring)' : 'var(--shadow-1)',
@@ -46,7 +46,7 @@ const customStyles: StylesConfig<ComboboxOption, false> = {
   input:            (base) => ({ ...base, color: 'var(--color-text)' }),
   menu:             (base) => ({
     ...base,
-    backgroundColor: 'var(--color-surface, #ffffff)',
+    backgroundColor: 'var(--color-surface)',
     borderRadius: 'var(--radius-control, 0.75rem)',
     border:       '1px solid var(--color-border)',
     boxShadow:    'var(--shadow-3)',

@@ -7,7 +7,7 @@ export function getReactSelectClassNames(
 ): ClassNamesConfig<SelectFieldOption, false> {
   const border = error ? 'border-error' : 'border-border';
   const focus = error
-    ? '!border-error shadow-[0_0_0_3px_rgba(229,62,62,0.22)]'
+    ? '!border-error shadow-[var(--focus-ring-error)]'
     : '!border-primary shadow-[var(--focus-ring)]';
 
   return {

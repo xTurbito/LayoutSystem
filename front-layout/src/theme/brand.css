@@ -1,0 +1,71 @@
+/* ─────────────────────────────────────────────────────────────────
+   MARCA DE ESTE PROYECTO
+
+   Unico archivo que cambia entre LayoutSystem y sus forks. El resto de
+   la capa visual (index.css) es sistema compartido y debe quedar
+   byte-identico en toda la cadena de forks, para que un `diff` alcance
+   para verificar que no hay deriva.
+
+   Aca van solo los valores propios del negocio: colores y escala
+   tipografica. Nada de estructura, radios, sombras, estados ni
+   keyframes -- eso es sistema.
+   ───────────────────────────────────────────────────────────────── */
+
+@theme {
+  --color-bg:                 #f8fafc;
+  --color-surface:            #ffffff;
+  --color-surface-container:  #eef2f7;
+  --color-surface-high:       #e2e8f0;
+  --color-border:             #e2e8f0;
+  --color-text:               #0f172a;
+  --color-secondary:          #64748b;
+  --color-primary:            #1e293b;
+  --color-primary-hover:      #0f172a;
+  --color-primary-container:  #dbe3ea;
+  --color-on-primary:         #ffffff;
+  --color-accent:             #2563eb;
+  --color-accent-hover:       #1d4ed8;
+  --color-error:              #e53e3e;
+  --color-error-container:    #fde2e2;
+  --color-success:            #38a169;
+  --color-success-container:  #dcf5e3;
+  --color-info:               #0ea5e9;
+  --color-info-container:     #e0f2fe;
+  --color-warning:            #b45309;
+  --color-warning-container:  #fef3c7;
+  --color-navy:               #1e293b;
+  --color-navy-deep:          #0f172a;
+
+  /* Escala tipografica: este proyecto corre un paso arriba de la escala
+     estandar de Tailwind. Es decision de producto, no del sistema. */
+  --text-xs:                  0.8125rem;
+  --text-sm:                  0.9375rem;
+  --text-base:                1.0625rem;
+  --text-lg:                  1.1875rem;
+  --text-xl:                  1.375rem;
+  --text-2xl:                 1.625rem;
+}
+
+/* Dark mode: solo los colores que cambian de valor.
+
+   PENDIENTE: este bloque no overridea los primeros planos semanticos
+   (--color-primary, --color-accent, --color-success, --color-warning), que
+   quedan con sus valores de light sobre un --color-bg de #0d1117. El primary
+   #1e293b da ~1.4:1 contra ese fondo, y accent/warning/success no llegan a AA.
+   El primary solo se ve mal con la paleta default, porque cada paleta con
+   nombre trae su variante .dark; los otros tres fallan con cualquier paleta.
+   Se arregla aparte para no mezclarlo con la homologacion del sistema. */
+.dark {
+  --color-bg:                #0d1117;
+  --color-surface:           #161b22;
+  --color-surface-container: #1c2128;
+  --color-surface-high:      #262c35;
+  --color-border:            #30363d;
+  --color-text:              #e6edf3;
+  --color-secondary:         #8b949e;
+  --color-primary-container: #263241;
+  --color-error-container:   #45201f;
+  --color-success-container: #163826;
+  --color-info-container:    #123247;
+  --color-warning-container: #3f2f10;
+}

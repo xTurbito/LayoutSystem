@@ -19,7 +19,7 @@ export default function Textarea({
   ...rest
 }: TextareaProps) {
   const borderClasses = errorMessage
-    ? 'border-error focus-visible:border-error focus-visible:shadow-[0_0_0_3px_rgba(229,62,62,0.22)]'
+    ? 'border-error focus-visible:border-error focus-visible:shadow-[var(--focus-ring-error)]'
     : 'border-border focus-visible:border-primary';
 
   return (
