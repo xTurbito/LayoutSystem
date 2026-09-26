@@ -48,13 +48,19 @@
 
 /* Dark mode: solo los colores que cambian de valor.
 
-   PENDIENTE: este bloque no overridea los primeros planos semanticos
-   (--color-primary, --color-accent, --color-success, --color-warning), que
-   quedan con sus valores de light sobre un --color-bg de #0d1117. El primary
-   #1e293b da ~1.4:1 contra ese fondo, y accent/warning/success no llegan a AA.
-   El primary solo se ve mal con la paleta default, porque cada paleta con
-   nombre trae su variante .dark; los otros tres fallan con cualquier paleta.
-   Se arregla aparte para no mezclarlo con la homologacion del sistema. */
+   Los primeros planos semanticos si estaban overrideados: sin esto, primary,
+   accent, success y warning se quedaban en su valor de light sobre un
+   --color-bg de #0d1117 y no llegaban a AA (primary #1e293b daba ~1.4:1, y
+   eso solo con la paleta default -- cada paleta con nombre trae su propia
+   variante .dark). Contraste verificado (formula WCAG) contra #0d1117:
+   primary 12.75:1, hover 7.38:1, accent 7.44:1, success 10.86:1,
+   warning 11.34:1; on-primary contra ambos tonos de primary >= 6.96:1.
+
+   accent y success no son valores nuevos: son los mismos que ya usan
+   :root[data-palette="azul"].dark y "verde".dark -- el accent de light de
+   este proyecto (#2563eb) ya coincide con el primary de la paleta azul, asi
+   que el dark solo completa esa misma decision. warning usa un ambar propio
+   porque no hay paleta con esa tonalidad para reusar. */
 .dark {
   --color-bg:                #0d1117;
   --color-surface:           #161b22;
@@ -63,9 +69,16 @@
   --color-border:            #30363d;
   --color-text:              #e6edf3;
   --color-secondary:         #8b949e;
+  --color-primary:           #cbd5e1;
+  --color-primary-hover:     #94a3b8;
   --color-primary-container: #263241;
+  --color-on-primary:        #0f172a;
+  --color-accent:            #60a5fa;
+  --color-accent-hover:      #3b82f6;
   --color-error-container:   #45201f;
+  --color-success:           #4ade80;
   --color-success-container: #163826;
   --color-info-container:    #123247;
+  --color-warning:           #fbbf24;
   --color-warning-container: #3f2f10;
 }
