@@ -30,15 +30,15 @@ export function LoginPage() {
 
         {/* Brand */}
         <div className="text-center mb-6">
-          <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-primary flex items-center justify-center shadow-[0_0_0_8px_rgba(63,73,246,0.16),0_18px_38px_rgba(63,73,246,0.24)]">
-            <LayoutGrid className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-primary flex items-center justify-center shadow-[var(--shadow-logo)]">
+            <LayoutGrid className="w-7 h-7 text-on-primary" />
           </div>
           <h1 className="text-2xl font-black text-text tracking-tight">LayoutSystem</h1>
           <p className="text-accent text-sm mt-0.5">Panel de administración</p>
         </div>
 
         {/* Card */}
-        <div className="bg-surface rounded-2xl shadow-[0_24px_70px_rgba(63,73,246,0.14)] overflow-hidden border border-border">
+        <div className="bg-surface rounded-2xl shadow-[var(--shadow-3)] overflow-hidden border border-border">
           <div className="px-8 pt-8 pb-2">
             <h2 className="text-xl font-bold text-text">Iniciar sesión</h2>
             <p className="text-secondary text-sm mt-0.5">Ingresa tus credenciales para continuar</p>

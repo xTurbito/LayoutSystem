@@ -5,10 +5,12 @@
 /* ─────────────────────────────────────────────────────────────────
    SISTEMA VISUAL COMPARTIDO
 
-   Este archivo no contiene ni un color de marca: todo deriva de los
-   tokens que define theme/brand.css. Debe quedar byte-identico en
-   AgendaSystem y en cada fork, asi `diff` alcanza para detectar deriva.
-   Si vas a agregar un color literal aca, va en brand.css.
+   Aca no hay colores de marca. Los unicos literales son los 9 bloques de
+   paleta de acento, que son sistema y son iguales en toda la cadena; todo
+   lo demas deriva de los tokens de theme/brand.css.
+
+   Debe quedar byte-identico en AgendaSystem y en cada fork, asi un diff
+   alcanza para detectar deriva. Un color nuevo de marca va en brand.css.
    ───────────────────────────────────────────────────────────────── */
 
 /* ── Paleta de acento (Apariencia) ──────────────────────────────
@@ -77,6 +79,11 @@
   --shadow-3:
     0 8px 16px color-mix(in srgb, var(--color-navy-deep) 8%, transparent),
     0 24px 56px color-mix(in srgb, var(--color-navy-deep) 14%, transparent);
+  /* Halo de la marca en el login. Deriva del primary: hardcodeado quedaba un
+     azul huerfano que no existia en ninguna paleta. */
+  --shadow-logo:
+    0 0 0 8px color-mix(in srgb, var(--color-primary) 16%, transparent),
+    0 18px 38px color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
 .dark {
