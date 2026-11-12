@@ -26,7 +26,7 @@ export default function SearchInput({ value, onChange, placeholder = 'Buscar…'
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full material-control py-2.5 pl-10 pr-12 text-sm placeholder:text-secondary/75 material-state focus-visible:border-primary"
+        className="w-full material-control py-2.5 pl-10 pr-12 text-base sm:text-sm placeholder:text-secondary/75 material-state focus-visible:border-primary"
         type="text"
       />
       {value && (

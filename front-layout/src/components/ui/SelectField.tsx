@@ -76,7 +76,7 @@ export default function SelectField({
             aria-describedby={describedBy}
             onChange={(event) => onChange(event.target.value)}
             onBlur={onBlur}
-            className={`block w-full appearance-none cursor-pointer border bg-surface text-sm focus-visible:border-primary focus-visible:shadow-[var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-60 ${size === 'compact' ? 'min-h-9 rounded-full py-1.5 pl-2.5 pr-8 text-xs font-semibold sm:pl-3' : 'min-h-10 rounded-xl py-2.5 pl-3 pr-9 shadow-[var(--shadow-1)]'} ${error ? 'border-error' : 'border-border'}`}
+            className={`block w-full appearance-none cursor-pointer border bg-surface text-base sm:text-sm focus-visible:border-primary focus-visible:shadow-[var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-60 ${size === 'compact' ? 'min-h-9 rounded-full py-1.5 pl-2.5 pr-8 text-base sm:text-xs font-semibold sm:pl-3' : 'min-h-10 rounded-xl py-2.5 pl-3 pr-9 shadow-[var(--shadow-1)]'} ${error ? 'border-error' : 'border-border'}`}
           >
             {placeholder && !options.some((option) => option.value === '') && <option value="" disabled={required}>{placeholder}</option>}
             {options.map((option) => (

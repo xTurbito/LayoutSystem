@@ -57,7 +57,7 @@ export default function CollapsibleSearchInput({ value, onChange, placeholder = 
         onFocus={expand}
         onBlur={handleBlur}
         placeholder={placeholder}
-        className="min-w-0 flex-1 bg-transparent py-2.5 pr-3 text-sm text-text outline-none placeholder:text-secondary/75"
+        className="min-w-0 flex-1 bg-transparent py-2.5 pr-3 text-base sm:text-sm text-text outline-none placeholder:text-secondary/75"
         type="text"
       />
       {value && expanded && (

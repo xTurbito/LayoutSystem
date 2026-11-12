@@ -88,7 +88,7 @@ export default function DateField({
             if (acceptsDateChange(event.currentTarget.value, clearable)) onChange(event.currentTarget.value);
           }}
           onBlur={onBlur}
-          className={`block w-full cursor-pointer material-control px-3 py-2.5 text-sm material-state disabled:cursor-not-allowed disabled:opacity-60 ${borderClasses}`}
+          className={`block w-full cursor-pointer material-control px-3 py-2.5 text-base sm:text-sm material-state disabled:cursor-not-allowed disabled:opacity-60 ${borderClasses}`}
         />
       ) : (
         <>
