@@ -28,5 +28,6 @@ export function getReactSelectClassNames(
     clearIndicator: () => 'flex min-h-10 cursor-pointer items-center px-1 text-secondary hover:text-primary',
     dropdownIndicator: () => 'flex min-h-10 cursor-pointer items-center px-1 text-secondary hover:text-primary',
     noOptionsMessage: () => 'px-3 py-2 text-sm text-secondary',
+    loadingMessage: () => 'px-3 py-2 text-sm text-secondary',
   };
 }
