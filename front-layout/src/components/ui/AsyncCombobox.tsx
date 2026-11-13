@@ -42,7 +42,12 @@ const customStyles: StylesConfig<ComboboxOption, false> = {
     opacity:         state.isDisabled ? 0.6 : 1,
     '&:hover': { borderColor: 'var(--color-primary)' },
   }),
-  placeholder:      (base) => ({ ...base, color: 'var(--color-secondary)', fontSize: '1rem', '@media (min-width: 640px)': { fontSize: '0.9375rem' } }),
+  placeholder:      (base) => ({
+    ...base,
+    color:           'var(--color-secondary)',
+    fontSize:        '1rem',
+    '@media (min-width: 640px)': { fontSize: '0.9375rem' },
+  }),
   singleValue:      (base) => ({ ...base, color: 'var(--color-text)' }),
   input:            (base) => ({ ...base, color: 'var(--color-text)' }),
   menu:             (base) => ({
