@@ -1,4 +1,5 @@
 import { apiClient, setAuthToken } from './client';
+import { withRefreshLock } from './refreshLock';
 import { ModuleAction } from '../types';
 import type { LoginRequest, LoginResponse, User } from '../types';
 import type { ChangePasswordDto, UpdateProfileDto } from '../modules/profile/type';
@@ -30,7 +31,9 @@ export const authApi = {
   },
 
   refresh: async () => {
-    const { data } = await apiClient.post<{ token: string; expiresAt: string }>('/api/auth/refresh');
+    const { data } = await withRefreshLock(() =>
+      apiClient.post<{ token: string; expiresAt: string }>('/api/auth/refresh'),
+    );
     setAuthToken(data.token);
     return data;
   },

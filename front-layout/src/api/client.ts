@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { toast } from 'sonner';
+import { withRefreshLock } from './refreshLock';
 
 export const USER_KEY = 'auth_user:v1';
 
@@ -73,10 +74,12 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.post(
-          `${BASE_URL}/api/auth/refresh`,
-          {},
-          { withCredentials: true, headers: { 'Content-Type': 'application/json' } },
+        const { data } = await withRefreshLock(() =>
+          axios.post(
+            `${BASE_URL}/api/auth/refresh`,
+            {},
+            { withCredentials: true, headers: { 'Content-Type': 'application/json' } },
+          ),
         );
 
         inMemoryToken = data.token;
