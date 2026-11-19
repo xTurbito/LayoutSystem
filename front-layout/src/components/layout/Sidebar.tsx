@@ -24,6 +24,7 @@ import { PALETTES, type PaletteId } from '../../theme/palette';
 import { getNextThemePreference, type ThemePreference } from '../../theme/theme';
 import ModalShell from '../ui/ModalShell';
 import Button from '../ui/Button';
+import { getNavModules } from './navModules';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -78,9 +79,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
     };
   }, [settingsOpen]);
 
-  const modules = user?.role.modules
-    .filter((m) => m.isActive && m.actions > 0)
-    .sort((a, b) => a.order - b.order) ?? [];
+  const modules = getNavModules(user?.role.modules);
 
   // padding/margin quedan fijos (no condicionados a collapsed): la marca del
   // aside ya anima su ancho via CSS grid (220ms, ver .app-layout en index.css);

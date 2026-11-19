@@ -197,10 +197,9 @@
   /* Mobile: sidebar es overlay, main ocupa todo */
   .app-layout       { @apply h-screen overflow-hidden; }
   .app-layout__content {
-    /* pt-16 en movil deja espacio al hamburger flotante (fixed top-3 left-3,
-       ver AppLayout.tsx) para que no tape botones "Volver" u otros controles
-       que viven pegados a la esquina superior izquierda del contenido. */
-    @apply h-screen overflow-y-auto p-4 pt-16 lg:p-6;
+    /* pb en movil deja libre la barra inferior (BottomNav.tsx) mas el home
+       indicator, para que no tape el final de formularios y listas. */
+    @apply h-screen overflow-y-auto p-4 pb-[calc(env(safe-area-inset-bottom)+4.5rem)] lg:p-6;
     background: transparent;
     scroll-padding: 1rem;
     /* Aísla el reflow interno (calendario/tablas) durante la animación del sidebar

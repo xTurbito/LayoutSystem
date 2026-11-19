@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import { AppLayout } from '../components/layout/AppLayout';
 import { LoginPage } from '../pages/LoginPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
+import { canAccessModule } from '../components/layout/navModules';
 
 
 const DashboardPage = lazy(() => import('../modules/dashboard/pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
@@ -48,8 +49,7 @@ function ModuleGuard() {
   const { pathname } = useLocation();
   const segment = pathname.split('/')[1];
   if (ALWAYS_ALLOWED.has(segment)) return <Outlet />;
-  const mod = user?.role.modules.find(m => m.route === `/${segment}`);
-  if (!mod || mod.actions === 0) return <Navigate to="/not-found" replace />;
+  if (!canAccessModule(user?.role.modules, segment)) return <Navigate to="/not-found" replace />;
   return <Outlet />;
 }
 

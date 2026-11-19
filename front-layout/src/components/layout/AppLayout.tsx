@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Menu } from 'lucide-react';
 import clsx from 'clsx';
 import { Sidebar } from './Sidebar';
+import { BottomNav } from './BottomNav';
 
 export function AppLayout() {
   const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1024);
@@ -35,16 +35,8 @@ export function AppLayout() {
 
       <Sidebar collapsed={collapsed} onToggle={toggle} />
 
-      {/* Hamburger flotante — solo móvil, cuando el sidebar está cerrado */}
-      {collapsed && (
-        <button
-          className="fixed top-3 left-3 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-surface text-secondary shadow-[var(--shadow-1)] material-state hover:bg-primary/8 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 focus-visible:ring-offset-2 focus-visible:ring-offset-bg lg:hidden"
-          onClick={toggle}
-          aria-label="Abrir menú"
-        >
-          <Menu size={20} />
-        </button>
-      )}
+      {/* Mobile nav: hidden while the drawer is open so it never overlaps it */}
+      {collapsed && <BottomNav onOpenMenu={toggle} />}
 
       <main id="main-content" className="app-layout__content">
         {/* h-full: sin esto ninguna pagina puede usar h-full/flex-1 de forma
