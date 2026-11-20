@@ -207,6 +207,17 @@
     contain: layout;
   }
 
+  /* El wrapper de la página (AppLayout) es h-full: si el contenido lo rebasa, el
+     padding-bottom de arriba ya no cuenta y lo último queda bajo la barra inferior.
+     Con min-height crece con el contenido y el padding vuelve a aplicar. Las páginas
+     de altura completa (raíz con h-full) se quedan con altura fija. */
+  @media (max-width: 1023.98px) {
+    .app-layout__content > div:not(:has(> .h-full)) {
+      height: auto !important;
+      min-height: 100%;
+    }
+  }
+
   .material-surface {
     @apply border border-border bg-surface rounded-xl;
     box-shadow: var(--shadow-1);
